@@ -11,7 +11,7 @@ namespace GameDebugger
             get { return m_Time; }
             set
             {
-                Debug.Log("New time is: " + m_Time);
+                Debug.Log("New time is: " + value);
                 m_Time = value;
             }
         }

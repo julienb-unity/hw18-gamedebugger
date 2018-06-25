@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Experimental.UIElements;
-using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GameDebugger
 {
@@ -16,11 +15,6 @@ namespace GameDebugger
             m_Playhead = playhead;
             activators.Add(new ManipulatorActivationFilter { button = MouseButton.LeftMouse });
             m_Active = false;
-        }
-
-        static Rect CalculatePosition(float x, float y, float width, float height)
-        {
-            return new Rect(x, y, width, height);
         }
 
         protected override void RegisterCallbacksOnTarget()

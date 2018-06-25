@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger 
@@ -14,15 +15,15 @@ namespace GameDebugger
         
         protected override void RegisterCallbacksOnTarget()
         {
-            target.RegisterCallback<MouseDownEvent>(OnMouseUp);
+            target.RegisterCallback<MouseDownEvent>(OnMouseDown);
         }
 
         protected override void UnregisterCallbacksFromTarget()
         {
-            target.RegisterCallback<MouseDownEvent>(OnMouseUp);
+            target.RegisterCallback<MouseDownEvent>(OnMouseDown);
         }
 
-        void OnMouseUp(MouseDownEvent evt)
+        void OnMouseDown(MouseDownEvent evt)
         {
             m_Playhead.SetTimeFromPixel(evt.mousePosition.x);
         }
