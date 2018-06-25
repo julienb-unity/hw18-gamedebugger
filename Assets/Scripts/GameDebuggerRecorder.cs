@@ -33,7 +33,7 @@ public class GameDebuggerRecorder
 	public GameDebuggerRecorder()
 	{
 		AddPropertyToRecord(typeof(Transform), "position");
-		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerDatabase.asset");
+		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording.asset");
 	}
 
 	public void StartRecording()
