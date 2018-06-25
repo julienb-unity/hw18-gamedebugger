@@ -81,7 +81,6 @@ public class GameDebuggerRecorder
 		if (!isRecording)
 			return;
 
-		Debug.Log("Stop recording");
 		isRecording = false;
 	}
 
@@ -96,11 +95,11 @@ public class GameDebuggerRecorder
 			return;
 
 		s_currentFrame++;
-		s_frameRecords[s_currentFrame] = new Dictionary<int, Recordable>();
+		s_frameRecords.Add(new Dictionary<int, Recordable>());
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			var scene = SceneManager.GetSceneAt(i);
-			foreach (var rootGameObject in scene.GetRootGameObjects())
+			foreach (var rootGameObject in scene.GetRootGameObjects(	))
 			{
 				RecordGameObject(rootGameObject);
 			}

@@ -31,7 +31,11 @@ namespace GameDebugger
 
         void OnRecord()
         {
-            Debug.Log("Record");
+            if (GameDebuggerRecorder.Instance.isRecording)
+                GameDebuggerRecorder.Instance.StopRecording();
+            else
+                GameDebuggerRecorder.Instance.StartRecording();
+            
         }
     }
 }
