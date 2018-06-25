@@ -34,3 +34,8 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Rider files
+.idea/
+Assets/Plugins.meta
+Assets/Plugins/
