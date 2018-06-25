@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
@@ -13,15 +14,30 @@ namespace GameDebugger
             name = "timeline";
             AddToClassList("container");
             AddStyleSheetPath("Stylesheets/Styles");
-
+            
+            var container = new VisualContainer();
+            container.name = "timeArea";
+            Add(container);
+            
             var imguiContainer = new IMGUIContainer(() =>
             {
                 m_TimeAreaGUI.OnGUI(contentRect);
             });
-            imguiContainer.style.height = 50;
-            imguiContainer.name = "timeArea";
+            container.Add(imguiContainer);
+            imguiContainer.StretchToParentSize();
             
-            Add(imguiContainer);
+            var slider = new VisualContainer();
+            slider.name = "dragSlider";
+            container.Add(slider);
+            slider.StretchToParentWidth();
+            
+            var playhead = new Box();
+            playhead.name = "playhead";
+            playhead.AddManipulator(new HorizontalDragger());
+            slider.Add(playhead);
+            
+            container.Add(slider);
+            
         }
     }
 }
