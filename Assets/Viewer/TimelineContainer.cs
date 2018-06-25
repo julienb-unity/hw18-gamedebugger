@@ -31,6 +31,10 @@ namespace GameDebugger
             
             imguiContainer.AddManipulator(new TimeAreaClickManipulator(playhead));
             playhead.AddManipulator(new TimeDragManipulator(playhead));
+
+            var tracks = new GameDebuggerTracks();
+            tracks.name = "tracks";
+            Add(tracks);
         }
     }
 }
