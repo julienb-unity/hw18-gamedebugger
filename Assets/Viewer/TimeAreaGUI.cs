@@ -28,6 +28,7 @@ namespace GameDebugger
             
         }
         
+        
         /*
         public void TimeRuler(Rect position, float frameRate)
         {

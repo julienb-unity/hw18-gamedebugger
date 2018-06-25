@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 using Object = System.Object;
 
 // Purpose of this class:
-//   - MonoBehaviour to be used by the game developer
+//   - Layer between the scene and the editor window
 //   - Allows the game dev to define what data to record
 //   - Discuss with the database only (never the editor)
 public class GameDebuggerRecorder

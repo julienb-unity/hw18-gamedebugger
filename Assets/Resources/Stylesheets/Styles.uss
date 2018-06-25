@@ -20,4 +20,20 @@
 }
 
 #timeArea{
+    height: 50;
+}
+
+#playhead
+{
+    background-color: rgba(150, 0, 0, 255);
+    position-type:absolute;
+    height: 25;
+    width: 10;
+    background-image:none;
+}
+
+#dragSlider
+{
+    margin-top:25;
+    height: 25;
 }
