@@ -1,32 +1,36 @@
-﻿
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 using Object = System.Object;
 
-public class RecordingManager
+// Purpose of this class:
+//   - MonoBehaviour to be used by the game developer
+//   - Allows the game dev to define what data to record
+//   - Discuss with the database only (never the editor)
+public class GameDebuggerRecorder : MonoBehaviour
 {
-	public static RecordingManager Instance
-	{
-		get
-		{
-			if (instance == null) instance = new RecordingManager();
-			return instance;
-		}
-	}
-	
-	private static RecordingManager instance;
-	
+	public static GameDebuggerRecorder Instance;
+		
 	public bool isRecording;
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
-	private RecordedData2 recorderDataStorage;
-	
-	public RecordingManager()
+	private GameDebuggerDatabase recorderDataStorage;
+
+	public void Awake()
 	{
-		typeToFieldNameMapping.Add(typeof(GameObject), "position");
-		recorderDataStorage = Resources.Load<RecordedData2>("RecorderDataStorage.asset");
+		Instance = this;
+	}
+	
+	public void Start()
+	{
+		AddPropertyToRecord(typeof(Transform), "position");
+		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording");
 	}
 
 	public void StartRecording()
@@ -39,6 +43,17 @@ public class RecordingManager
 		isRecording = false;
 	}
 
+	public void AddPropertyToRecord(Type type, string propName)
+	{		
+		typeToFieldNameMapping.Add(type, propName);
+		
+	}
+
+	public void Update()
+	{
+		recorderDataStorage.RecordNewFrame();
+	}
+	
 	public List<UnityEngine.Object> GetAllMonitoredObejcts(int frameNumber)
 	{
 		List<UnityEngine.Object> allObjects = new List<UnityEngine.Object>();

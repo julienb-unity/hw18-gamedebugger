@@ -1,0 +1,24 @@
+
+.container {
+    background-color: rgb(150, 150, 150);
+    margin-top: 6;
+    margin-bottom: 6;
+}
+
+#header
+{
+    flex-direction: row;
+    justify-content: center;
+}
+
+#playButton
+{   
+}
+
+#recordButton
+{   
+}
+
+#timeArea{
+    height: 50;
+}

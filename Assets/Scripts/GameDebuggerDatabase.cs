@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 // Purpose of this class:
@@ -10,7 +12,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class GameDebuggerDatabase : ScriptableObject
 {
-	private int currentFrame = 0;
+	private int currentFrame = -1;
+	
 	public List<UnityObjectRecordedData> recording = new List<UnityObjectRecordedData>();
 
 	public Dictionary<int, UnityObjectRecordedData> instanceIdToDatamapping = new Dictionary<int, UnityObjectRecordedData>();
@@ -20,15 +23,15 @@ public class GameDebuggerDatabase : ScriptableObject
 		recording.Clear();
 	}
 
-	public void LateUpdate()
+	public void RecordNewFrame()
 	{
-		if (!RecordingManager.Instance.isRecording) return;
+		if (!GameDebuggerRecorder.Instance.isRecording) return;
 
 		currentFrame++;
 		
 		foreach (var obj in FindObjectsOfType<UnityEngine.Object>())
 		{
-			foreach (Type type in RecordingManager.Instance.typeToFieldNameMapping.Keys)
+			foreach (Type type in GameDebuggerRecorder.Instance.typeToFieldNameMapping.Keys)
 			{
 				if (obj.GetType() == type)
 				{
@@ -40,10 +43,11 @@ public class GameDebuggerDatabase : ScriptableObject
 						recording.Add(data);
 					}
 					
-					UpdateObjData(data, RecordingManager.Instance.typeToFieldNameMapping[type]);
+					UpdateObjData(data, obj, GameDebuggerRecorder.Instance.typeToFieldNameMapping[type]);
 				}
 			}
 		}
+		EditorUtility.SetDirty(this);
 	}
 
 	private UnityObjectRecordedData GetCachedObjectData(int instanceId)
@@ -60,14 +64,31 @@ public class GameDebuggerDatabase : ScriptableObject
 		return null;
 	}
 	
-	private void UpdateObjData(UnityObjectRecordedData obj, string fieldName)
+	private void UpdateObjData(UnityObjectRecordedData objData, UnityEngine.Object obj, string fieldName)
 	{
-		PropertyData propertyData = obj.GetPropertyData(fieldName);
+		PropertyData propertyData = objData.GetPropertyData(fieldName);
 		if (propertyData == null)
 		{
 			propertyData = new PropertyData(currentFrame);
-			obj.propertyData.Add(propertyData);
+			objData.propertyData.Add(propertyData);
 		}
-		propertyData.frameData.Add(obj.GetType().GetField(fieldName).GetValue(obj));
+		FieldInfo fieldInfo = obj.GetType().GetField(fieldName);
+		
+		if (fieldInfo != null)
+		{
+			propertyData.frameData.Add(fieldInfo.GetValue(obj));
+		}
+		else
+		{
+			PropertyInfo propertyInfo = obj.GetType().GetProperty(fieldName);
+			if (propertyInfo != null)
+			{
+				propertyData.frameData.Add(propertyInfo.GetValue(obj, null));
+			}
+			else
+			{
+				Debug.LogError("No property with name " + fieldName + " in type " + obj.GetType());
+			}
+		}
 	}
 }
