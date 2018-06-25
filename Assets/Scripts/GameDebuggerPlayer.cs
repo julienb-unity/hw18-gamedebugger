@@ -21,13 +21,13 @@ public static class GameDebuggerPlayer
 		EditorApplication.update += Update; 
 	}
 
-	private static int frame = 0;
+	private static int m_frame = 0;
 	public static void StartReplay()
 	{
 		if (isPlaying)
 			return;
 
-		frame = 0;
+		m_frame = 0;
 		EditorApplication.isPaused = true;
 		
 
@@ -48,11 +48,21 @@ public static class GameDebuggerPlayer
 		if (!isPlaying)
 			return;
 
+		if (ReplayFrame(m_frame)) return;
+
+		m_frame++;
+	}
+
+	private static bool ReplayFrame(int frame)
+	{
+		StartReplay();
+		
 		if (frame >= GameDebuggerDatabase.NumFrameRecords)
 		{
 			StopReplay();
-			return;
+			return true;
 		}
+
 		foreach (var recordable in GameDebuggerDatabase.GetRecords(frame))
 		{
 			var o = EditorUtility.InstanceIDToObject(recordable.Key);
@@ -62,7 +72,6 @@ public static class GameDebuggerPlayer
 			}
 		}
 
-		frame++;
+		return false;
 	}
-
 }
