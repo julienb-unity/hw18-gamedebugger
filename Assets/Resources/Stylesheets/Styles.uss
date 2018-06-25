@@ -30,6 +30,7 @@
     height: 25;
     width: 10;
     background-image:none;
+    margin-top:25;
 }
 
 #dragSlider

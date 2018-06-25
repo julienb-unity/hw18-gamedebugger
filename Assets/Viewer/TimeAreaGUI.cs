@@ -7,11 +7,14 @@ namespace GameDebugger
     public class TimeAreaGUI
     {
         object m_TimeArea;
+        Rect m_LastRect;
 
         MethodInfo m_BeginView;
         MethodInfo m_EndView;
         MethodInfo m_DrawTimeRuler;
         PropertyInfo m_TimeAreaRect;
+        MethodInfo m_TimeToPixel;
+        MethodInfo m_PixelToTime;
 
         public TimeAreaGUI()
         {
@@ -25,9 +28,19 @@ namespace GameDebugger
             m_TimeAreaRect = timeAreaType.GetProperty("rect");
             var timeAreaHRangeMin = timeAreaType.GetProperty("hRangeMin");
             timeAreaHRangeMin.SetValue(m_TimeArea, 0.0f, null);
-            
+            m_TimeToPixel = timeAreaType.GetMethod("TimeToPixel", new[] {typeof(float), typeof(Rect)});
+            m_PixelToTime = timeAreaType.GetMethod("PixelToTime", new[] {typeof(float), typeof(Rect)});
         }
-        
+
+        public float TimeToPixel(float time)
+        {
+            return (float)m_TimeToPixel.Invoke(m_TimeArea, new object[]{time, m_LastRect});
+        }
+
+        public float PixelToTime(float pixel)
+        {
+            return (float)m_PixelToTime.Invoke(m_TimeArea, new object[]{ pixel, m_LastRect});
+        }
         
         /*
         public void TimeRuler(Rect position, float frameRate)
@@ -45,6 +58,7 @@ namespace GameDebugger
             */
         public void OnGUI(Rect rect)
         {
+            m_LastRect = rect;
             m_TimeAreaRect.SetValue(m_TimeArea, rect, null);
             m_BeginView.Invoke(m_TimeArea, null);
             m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 60.0f});

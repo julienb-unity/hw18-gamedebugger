@@ -6,8 +6,8 @@ namespace GameDebugger
 {
     public class DebuggerViewer : EditorWindow
     {
-
-        TimelineContainer timelineContainer;
+        TimeManager m_TimeMgr = new TimeManager();
+        
         // Add menu named "My Window" to the Window menu
         [MenuItem("Window/GameDebugger")]
         static void InitWindow()
@@ -23,7 +23,7 @@ namespace GameDebugger
             var root = this.GetRootVisualContainer();
 
             var header = new HeaderContainer();
-            timelineContainer = new TimelineContainer();
+            var timelineContainer = new TimelineContainer(m_TimeMgr);
 
             root.Add(header);
             root.Add(timelineContainer);
