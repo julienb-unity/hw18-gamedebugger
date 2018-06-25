@@ -25,7 +25,8 @@ namespace GameDebugger
 
         void OnMouseDown(MouseDownEvent evt)
         {
-            m_Playhead.SetTimeFromPixel(evt.mousePosition.x);
+            if (evt.button == 0)
+                m_Playhead.SetTimeFromPixel(evt.mousePosition.x);
         }
     }
 }
