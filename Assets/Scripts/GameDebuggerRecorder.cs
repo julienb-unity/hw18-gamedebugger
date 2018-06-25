@@ -13,47 +13,64 @@ using Object = System.Object;
 //   - MonoBehaviour to be used by the game developer
 //   - Allows the game dev to define what data to record
 //   - Discuss with the database only (never the editor)
-public class GameDebuggerRecorder : MonoBehaviour
+public class GameDebuggerRecorder
 {
-	public static GameDebuggerRecorder Instance;
-		
+	private static GameDebuggerRecorder m_Instance;
+	public static GameDebuggerRecorder Instance
+	{
+		get
+		{
+			if (m_Instance == null)
+				m_Instance = new GameDebuggerRecorder();
+			return m_Instance;
+		}
+	}
+
 	public bool isRecording;
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
 	private GameDebuggerDatabase recorderDataStorage;
 
-	public void Awake()
+	private GameDebuggerRecorder()
 	{
-		Instance = this;
-	}
-	
-	public void Start()
-	{
-		AddPropertyToRecord(typeof(Transform), "position");
 		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording");
+
+		var go = new GameObject("GameDebugger");
+		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
+		go.AddComponent<GameDebuggerBehaviour>();
 	}
 
 	public void StartRecording()
 	{
+		if (isRecording)
+			return;
+
+		Debug.Log("Start recording");
 		isRecording = true;
 	}
 	
 	public void StopRecording()
 	{
+		if (!isRecording)
+			return;
+
+		Debug.Log("Stop recording");
 		isRecording = false;
 	}
 
 	public void AddPropertyToRecord(Type type, string propName)
 	{		
 		typeToFieldNameMapping.Add(type, propName);
-		
 	}
 
-	public void Update()
+	public void Record()
 	{
+		if (!isRecording)
+			return;
+
 		recorderDataStorage.RecordNewFrame();
 	}
-	
+
 	public List<UnityEngine.Object> GetAllMonitoredObejcts(int frameNumber)
 	{
 		List<UnityEngine.Object> allObjects = new List<UnityEngine.Object>();

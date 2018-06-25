@@ -25,8 +25,6 @@ public class GameDebuggerDatabase : ScriptableObject
 
 	public void RecordNewFrame()
 	{
-		if (!GameDebuggerRecorder.Instance.isRecording) return;
-
 		currentFrame++;
 		
 		foreach (var obj in FindObjectsOfType<UnityEngine.Object>())
