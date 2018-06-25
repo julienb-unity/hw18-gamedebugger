@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameDebuggerDatabase : MonoBehaviour
+// Purpose of this class:
+//   - Fetch data from scene
+//   - Provide API for the editor window to retrieve the recorded data
+//   - Provide API for the editor window to send data
+public class GameDebuggerDatabase
 {
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-    }
 }
