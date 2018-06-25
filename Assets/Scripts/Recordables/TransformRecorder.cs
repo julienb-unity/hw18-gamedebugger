@@ -9,19 +9,20 @@ public class TransformRecorder : RecordableComponent<Transform>
     [SerializeField]
     private Vector3 scale;    
 
-    public override void OnRecord(GameObject gameObject, Component component)
+    public override void OnRecord(Object source)
     {
-        var t = component as Transform;
+        var t = source as Transform;
         position = t.position;
         rotation = t.rotation;
         scale = t.localScale;
     }
 
-    public override void OnReplay(GameObject gameObject, Component component)
+    public override void OnReplay(Object source)
     {
-        gameObject.transform.position = position;
-        gameObject.transform.rotation = rotation;
-        gameObject.transform.localScale = scale;
+        var component = source as Component;
+        component.gameObject.transform.position = position;
+        component.gameObject.transform.rotation = rotation;
+        component.gameObject.transform.localScale = scale;
     }
 }
 

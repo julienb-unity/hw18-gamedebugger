@@ -6,6 +6,6 @@ public class GameDebuggerBehaviour : MonoBehaviour
 {
 	public void LateUpdate()
 	{
-		GameDebuggerRecorder.Instance.Record();
+		GameDebuggerRecorder.Instance.Update();
 	}
 }

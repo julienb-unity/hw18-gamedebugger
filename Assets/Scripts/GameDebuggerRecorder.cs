@@ -4,9 +4,11 @@ using UnityEngine;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
+using UnityEngine.SceneManagement;
 using Object = System.Object;
 
 // Purpose of this class:
@@ -30,6 +32,10 @@ public class GameDebuggerRecorder
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
 	private GameDebuggerDatabase recorderDataStorage;
+	List<Type> s_recordables = new List<Type>();
+	Dictionary<Type,List<Type>> s_TypeToRecordable = new Dictionary<Type, List<Type>>();
+	private List<Dictionary<int, Recordable>> s_frameRecords = new List<Dictionary<int, Recordable>>();
+	private int s_currentFrame;
 
 	private GameDebuggerRecorder()
 	{
@@ -38,6 +44,25 @@ public class GameDebuggerRecorder
 		var go = new GameObject("GameDebugger");
 		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		go.AddComponent<GameDebuggerBehaviour>();
+		
+		
+		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+		foreach (var assembly in assemblies)
+			s_recordables.AddRange(ReflectionHelpers.GetDerivedTypes(typeof(Recordable<>),assembly).ToList());
+
+		foreach (var recordable in s_recordables)
+		{
+			if (recordable.IsGenericType)
+				continue;
+
+			var t = recordable.BaseType.GetGenericArguments()[0];
+			
+			if (!s_TypeToRecordable.ContainsKey(t))
+				s_TypeToRecordable[t]= new List<Type>();
+
+			s_TypeToRecordable[t].Add(recordable);				
+			Debug.Log(recordable); 
+		}
 	}
 
 	public void StartRecording()
@@ -45,7 +70,9 @@ public class GameDebuggerRecorder
 		if (isRecording)
 			return;
 
-		Debug.Log("Start recording");
+		s_frameRecords.Clear();
+		s_currentFrame = -1;
+
 		isRecording = true;
 	}
 	
@@ -63,12 +90,23 @@ public class GameDebuggerRecorder
 		typeToFieldNameMapping.Add(type, propName);
 	}
 
-	public void Record()
+	public void Update()
 	{
 		if (!isRecording)
 			return;
 
-		recorderDataStorage.RecordNewFrame();
+		s_currentFrame++;
+		s_frameRecords[s_currentFrame] = new Dictionary<int, Recordable>();
+		for (int i = 0; i < SceneManager.sceneCount; i++)
+		{
+			var scene = SceneManager.GetSceneAt(i);
+			foreach (var rootGameObject in scene.GetRootGameObjects())
+			{
+				RecordGameObject(rootGameObject);
+			}
+		}
+		
+		//recorderDataStorage.RecordNewFrame();
 	}
 
 	public List<UnityEngine.Object> GetAllMonitoredObejcts(int frameNumber)
@@ -121,5 +159,35 @@ public class GameDebuggerRecorder
 //			}
 //		}
 		return null;
+	}
+	
+	
+	private void RecordData(Type t, UnityEngine.Object o)
+	{
+		List<Type> list;
+		if (s_TypeToRecordable.TryGetValue(t, out list))
+		{
+			foreach (var type in list)
+			{
+				var recordable = (Recordable)Activator.CreateInstance(type);
+				recordable.OnRecord(o);
+				s_frameRecords[s_currentFrame][o.GetInstanceID()] = recordable;
+//				s_frameRecords[s_currentFrame][o.GetInstanceID()]=recordable;
+			}
+		}
+	}
+	
+	private void RecordGameObject(GameObject gameObject)
+	{
+		RecordData(typeof(GameObject), gameObject);
+		foreach (var component in gameObject.GetComponents<Component>())
+		{
+			RecordData(component.GetType(), component);
+		}
+
+		for (int i = 0; i < gameObject.transform.childCount; i++)
+		{
+			RecordGameObject(gameObject.transform.GetChild(i).gameObject);
+		}
 	}
 }
