@@ -2,8 +2,8 @@
 using UnityEditor;
 using UnityEditor.Experimental.UIElements;
 
-namespace GameDebugger {
-
+namespace GameDebugger
+{
     public class DebuggerViewer : EditorWindow
     {
         // Add menu named "My Window" to the Window menu
