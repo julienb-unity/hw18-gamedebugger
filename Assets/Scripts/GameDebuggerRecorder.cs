@@ -28,13 +28,18 @@ public class GameDebuggerRecorder
 		}
 	}
 
+
+	class DB
+	{
+		
+	}
+
 	public bool isRecording;
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
 	private GameDebuggerDatabase recorderDataStorage;
-	List<Type> s_recordables = new List<Type>();
 	Dictionary<Type,List<Type>> s_TypeToRecordable = new Dictionary<Type, List<Type>>();
-	private List<Dictionary<int, Recordable>> s_frameRecords = new List<Dictionary<int, Recordable>>();
+	public List<Dictionary<int, Recordable>> s_frameRecords = new List<Dictionary<int, Recordable>>();
 	private int s_currentFrame;
 
 	private GameDebuggerRecorder()
@@ -46,11 +51,12 @@ public class GameDebuggerRecorder
 		go.AddComponent<GameDebuggerBehaviour>();
 		
 		
+		List<Type> recordables = new List<Type>();
 		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 		foreach (var assembly in assemblies)
-			s_recordables.AddRange(ReflectionHelpers.GetDerivedTypes(typeof(Recordable<>),assembly).ToList());
+			recordables.AddRange(ReflectionHelpers.GetDerivedTypes(typeof(Recordable<>),assembly).ToList());
 
-		foreach (var recordable in s_recordables)
+		foreach (var recordable in recordables)
 		{
 			if (recordable.IsGenericType)
 				continue;

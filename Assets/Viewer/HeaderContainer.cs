@@ -26,7 +26,12 @@ namespace GameDebugger
 
         void OnPlay()
         {
-            Debug.Log("Play");
+            if (GameDebuggerRecorder.Instance.isRecording)
+                return;
+            if (GameDebuggerPlayer.Instance.isPlaying)
+                GameDebuggerPlayer.Instance.StopReplay();
+            else
+                GameDebuggerPlayer.Instance.StartReplay();
         }
 
         void OnRecord()
