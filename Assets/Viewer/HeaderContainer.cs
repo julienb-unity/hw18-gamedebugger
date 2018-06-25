@@ -26,20 +26,20 @@ namespace GameDebugger
 
         void OnPlay()
         {
-            if (GameDebuggerRecorder.Instance.isRecording)
+            if (GameDebuggerRecorder.isRecording)
                 return;
-            if (GameDebuggerPlayer.Instance.isPlaying)
-                GameDebuggerPlayer.Instance.StopReplay();
+            if (GameDebuggerPlayer.isPlaying)
+                GameDebuggerPlayer.StopReplay();
             else
-                GameDebuggerPlayer.Instance.StartReplay();
+                GameDebuggerPlayer.StartReplay();
         }
 
         void OnRecord()
         {
-            if (GameDebuggerRecorder.Instance.isRecording)
-                GameDebuggerRecorder.Instance.StopRecording();
+            if (GameDebuggerRecorder.isRecording)
+                GameDebuggerRecorder.StopRecording();
             else
-                GameDebuggerRecorder.Instance.StartRecording();
+                GameDebuggerRecorder.StartRecording();
             
         }
     }

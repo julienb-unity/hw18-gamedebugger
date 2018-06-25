@@ -15,74 +15,40 @@ using Object = System.Object;
 //   - Layer between the scene and the editor window
 //   - Allows the game dev to define what data to record
 //   - Discuss with the database only (never the editor)
+[InitializeOnLoad]
 public class GameDebuggerRecorder
 {
-	private static GameDebuggerRecorder m_Instance;
-	public static GameDebuggerRecorder Instance
-	{
-		get
-		{
-			if (m_Instance == null)
-				m_Instance = new GameDebuggerRecorder();
-			return m_Instance;
-		}
-	}
 
+	public static bool isRecording;
+	public static Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
-	class DB
-	{
-		
-	}
-
-	public bool isRecording;
-	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
-
-	private GameDebuggerDatabase recorderDataStorage;
-	Dictionary<Type,List<Type>> s_TypeToRecordable = new Dictionary<Type, List<Type>>();
-	public List<Dictionary<int, Recordable>> s_frameRecords = new List<Dictionary<int, Recordable>>();
-	private int s_currentFrame;
-
-	private GameDebuggerRecorder()
+	private static GameDebuggerDatabase recorderDataStorage;
+	private static int m_currentFrame ;
+	
+	static GameDebuggerRecorder()
 	{
 		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording");
 
 		var go = new GameObject("GameDebugger");
 		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		go.AddComponent<GameDebuggerBehaviour>();
-		
-		
-		List<Type> recordables = new List<Type>();
-		var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-		foreach (var assembly in assemblies)
-			recordables.AddRange(ReflectionHelpers.GetDerivedTypes(typeof(Recordable<>),assembly).ToList());
 
-		foreach (var recordable in recordables)
-		{
-			if (recordable.IsGenericType)
-				continue;
-
-			var t = recordable.BaseType.GetGenericArguments()[0];
-			
-			if (!s_TypeToRecordable.ContainsKey(t))
-				s_TypeToRecordable[t]= new List<Type>();
-
-			s_TypeToRecordable[t].Add(recordable);				
-			Debug.Log(recordable); 
-		}
+		GameDebuggerDatabase.Init();
 	}
 
-	public void StartRecording()
+	public static void StartRecording()
 	{
 		if (isRecording)
 			return;
 
-		s_frameRecords.Clear();
-		s_currentFrame = -1;
+		GameDebuggerDatabase.Clear();
+		m_currentFrame = 0;
+
 
 		isRecording = true;
 	}
 	
-	public void StopRecording()
+	public static void StopRecording()
 	{
 		if (!isRecording)
 			return;
@@ -90,27 +56,19 @@ public class GameDebuggerRecorder
 		isRecording = false;
 	}
 
-	public void AddPropertyToRecord(Type type, string propName)
+	public static void AddPropertyToRecord(Type type, string propName)
 	{		
 		typeToFieldNameMapping.Add(type, propName);
 	}
 
-	public void Update()
+	public static void Update()
 	{
 		if (!isRecording)
 			return;
 
-		s_currentFrame++;
-		s_frameRecords.Add(new Dictionary<int, Recordable>());
-		for (int i = 0; i < SceneManager.sceneCount; i++)
-		{
-			var scene = SceneManager.GetSceneAt(i);
-			foreach (var rootGameObject in scene.GetRootGameObjects(	))
-			{
-				RecordGameObject(rootGameObject);
-			}
-		}
+		GameDebuggerDatabase.RecordFrame(m_currentFrame);
 		
+		m_currentFrame ++;
 		//recorderDataStorage.RecordNewFrame();
 	}
 
@@ -167,32 +125,5 @@ public class GameDebuggerRecorder
 	}
 	
 	
-	private void RecordData(Type t, UnityEngine.Object o)
-	{
-		List<Type> list;
-		if (s_TypeToRecordable.TryGetValue(t, out list))
-		{
-			foreach (var type in list)
-			{
-				var recordable = (Recordable)Activator.CreateInstance(type);
-				recordable.OnRecord(o);
-				s_frameRecords[s_currentFrame][o.GetInstanceID()] = recordable;
-//				s_frameRecords[s_currentFrame][o.GetInstanceID()]=recordable;
-			}
-		}
-	}
-	
-	private void RecordGameObject(GameObject gameObject)
-	{
-		RecordData(typeof(GameObject), gameObject);
-		foreach (var component in gameObject.GetComponents<Component>())
-		{
-			RecordData(component.GetType(), component);
-		}
 
-		for (int i = 0; i < gameObject.transform.childCount; i++)
-		{
-			RecordGameObject(gameObject.transform.GetChild(i).gameObject);
-		}
-	}
 }

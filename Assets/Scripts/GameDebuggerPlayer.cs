@@ -11,28 +11,18 @@ using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.SceneManagement;
 using Object = System.Object;
 
-public class GameDebuggerPlayer
+[InitializeOnLoad]
+public static class GameDebuggerPlayer
 {
-	private static GameDebuggerPlayer m_Instance;
-	public static GameDebuggerPlayer Instance
-	{
-		get
-		{
-			if (m_Instance == null)
-				m_Instance = new GameDebuggerPlayer();
-			return m_Instance;
-		}
-	}
+	public static bool isPlaying;
 
-	public bool isPlaying;
-
-	private GameDebuggerPlayer()
+	static GameDebuggerPlayer()
 	{
 		EditorApplication.update += Update; 
 	}
 
-	private int frame = 0;
-	public void StartReplay()
+	private static int frame = 0;
+	public static void StartReplay()
 	{
 		if (isPlaying)
 			return;
@@ -45,7 +35,7 @@ public class GameDebuggerPlayer
 
 	}
 	
-	public void StopReplay()
+	public static void StopReplay()
 	{
 		if (!isPlaying)
 			return;
@@ -53,17 +43,17 @@ public class GameDebuggerPlayer
 		isPlaying = false;
 	}
 
-	public void Update()
+	public static void Update()
 	{
 		if (!isPlaying)
 			return;
 
-		if (frame >= GameDebuggerRecorder.Instance.s_frameRecords.Count)
+		if (frame >= GameDebuggerDatabase.NumFrameRecords)
 		{
 			StopReplay();
 			return;
 		}
-		foreach (var recordable in GameDebuggerRecorder.Instance.s_frameRecords[frame])
+		foreach (var recordable in GameDebuggerDatabase.GetRecords(frame))
 		{
 			var o = EditorUtility.InstanceIDToObject(recordable.Key);
 			if (o != null)
