@@ -14,16 +14,16 @@ using Object = System.Object;
 //   - Discuss with the database only (never the editor)
 public class GameDebuggerRecorder
 {
-	public static RecordingManager Instance
+	public static GameDebuggerRecorder Instance
 	{
 		get
 		{
-			if (instance == null) instance = new RecordingManager();
+			if (instance == null) instance = new GameDebuggerRecorder();
 			return instance;
 		}
 	}
 	
-	private static RecordingManager instance;
+	private static GameDebuggerRecorder instance;
 	
 	public bool isRecording;
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
@@ -32,7 +32,7 @@ public class GameDebuggerRecorder
 	
 	public GameDebuggerRecorder()
 	{
-		AddPropertyToRecord(typeof(GameObject), "position");
+		AddPropertyToRecord(typeof(Transform), "position");
 		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerDatabase.asset");
 	}
 

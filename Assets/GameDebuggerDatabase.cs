@@ -22,13 +22,13 @@ public class GameDebuggerDatabase : ScriptableObject
 
 	public void LateUpdate()
 	{
-		if (!RecordingManager.Instance.isRecording) return;
+		if (!GameDebuggerRecorder.Instance.isRecording) return;
 
 		currentFrame++;
 		
 		foreach (var obj in FindObjectsOfType<UnityEngine.Object>())
 		{
-			foreach (Type type in RecordingManager.Instance.typeToFieldNameMapping.Keys)
+			foreach (Type type in GameDebuggerRecorder.Instance.typeToFieldNameMapping.Keys)
 			{
 				if (obj.GetType() == type)
 				{
@@ -40,7 +40,7 @@ public class GameDebuggerDatabase : ScriptableObject
 						recording.Add(data);
 					}
 					
-					UpdateObjData(data, RecordingManager.Instance.typeToFieldNameMapping[type]);
+					UpdateObjData(data, GameDebuggerRecorder.Instance.typeToFieldNameMapping[type]);
 				}
 			}
 		}
