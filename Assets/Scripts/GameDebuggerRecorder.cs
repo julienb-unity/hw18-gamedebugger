@@ -6,34 +6,31 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 using Object = System.Object;
 
 // Purpose of this class:
 //   - MonoBehaviour to be used by the game developer
 //   - Allows the game dev to define what data to record
 //   - Discuss with the database only (never the editor)
-public class GameDebuggerRecorder
+public class GameDebuggerRecorder : MonoBehaviour
 {
-	public static GameDebuggerRecorder Instance
-	{
-		get
-		{
-			if (instance == null) instance = new GameDebuggerRecorder();
-			return instance;
-		}
-	}
-	
-	private static GameDebuggerRecorder instance;
-	
+	public static GameDebuggerRecorder Instance;
+		
 	public bool isRecording;
 	public Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
 	private GameDebuggerDatabase recorderDataStorage;
+
+	public void Awake()
+	{
+		Instance = this;
+	}
 	
-	public GameDebuggerRecorder()
+	public void Start()
 	{
 		AddPropertyToRecord(typeof(Transform), "position");
-		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording.asset");
+		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording");
 	}
 
 	public void StartRecording()
@@ -51,6 +48,12 @@ public class GameDebuggerRecorder
 		typeToFieldNameMapping.Add(type, propName);
 		
 	}
+
+	public void Update()
+	{
+		recorderDataStorage.RecordNewFrame();
+	}
+	
 	public List<UnityEngine.Object> GetAllMonitoredObejcts(int frameNumber)
 	{
 		List<UnityEngine.Object> allObjects = new List<UnityEngine.Object>();
