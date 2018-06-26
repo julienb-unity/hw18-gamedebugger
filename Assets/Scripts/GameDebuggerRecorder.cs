@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
 using System;
 using UnityEditor;
 
@@ -11,17 +10,13 @@ using UnityEditor;
 [InitializeOnLoad]
 public class GameDebuggerRecorder
 {
-
 	public static bool isRecording;
 	public static Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
-	private static GameDebuggerDatabase recorderDataStorage;
 	private static int m_currentFrame ;
 	
 	static GameDebuggerRecorder()
 	{
-		recorderDataStorage = Resources.Load<GameDebuggerDatabase>("GameDebuggerRecording");
-
 		var go = new GameObject("GameDebugger");
 		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		go.AddComponent<GameDebuggerBehaviour>();
@@ -47,6 +42,9 @@ public class GameDebuggerRecorder
 			return;
 
 		isRecording = false;
+		
+		Debug.LogFormat("Recorded {0} frames",GameDebuggerDatabase.NumFrameRecords);
+//		GameDebuggerDatabase.LogStats();
 	}
 
 	public static void AddPropertyToRecord(Type type, string propName)

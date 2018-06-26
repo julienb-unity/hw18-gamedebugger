@@ -4,7 +4,7 @@ namespace Recordables
 {
     public abstract class Recordable
     {
-        public abstract void OnRecord(Object source);
+        public abstract bool OnRecord(Recordable previous, Object source);
         public abstract void OnReplay(Object source);
     }
 

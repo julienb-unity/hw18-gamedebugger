@@ -6,10 +6,16 @@ namespace Recordables
     {
         [SerializeField] private bool isActive;
     
-        public override void OnRecord(Object source)
+        public override bool OnRecord(Recordable previous, Object source)
         {
             var go = source as GameObject;
+            var prev = previous as GameObjectRecordable;
+
+            if (prev != null && prev.isActive == go.activeSelf)
+                return false;
+            
             isActive = go.activeSelf;
+            return true;
         }
 
         public override void OnReplay(Object source)

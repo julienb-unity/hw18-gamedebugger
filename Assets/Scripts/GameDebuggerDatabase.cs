@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 public class GameDebuggerDatabase : ScriptableObject
 {
 	static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
+	static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
 	static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
 	private static int m_frame;
 	public static int NumFrameRecords
@@ -46,6 +47,7 @@ public class GameDebuggerDatabase : ScriptableObject
 
 	public static void Clear()
 	{
+		m_sessionRecords.Clear();
 		m_frameRecords.Clear();
 	}
 
@@ -71,7 +73,13 @@ public class GameDebuggerDatabase : ScriptableObject
 			foreach (var type in list)
 			{
 				var recordable = (Recordable)Activator.CreateInstance(type);
-				recordable.OnRecord(o);
+				Recordable previous = null;
+				m_sessionRecords.TryGetValue(o.GetInstanceID(), out previous);
+				if (recordable.OnRecord(previous,o))
+				{
+					m_frameRecords[m_frame][o.GetInstanceID()] = recordable;
+					m_sessionRecords[o.GetInstanceID()] = recordable;
+				}
 				m_frameRecords[m_frame].Add(new RecordableInfo(o.GetInstanceID(), recordable));
 			}
 		}
