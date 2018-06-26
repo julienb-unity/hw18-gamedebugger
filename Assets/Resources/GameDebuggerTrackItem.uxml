@@ -11,8 +11,8 @@
                         UnityEditor.PackageManager.UI ../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
 "
 >
-  <engine:VisualElement style="flex-direction: row">
-    <engine:Label text="Track name" style="width: 150" />
+  <engine:VisualElement class="track">
+    <engine:Label text="Track name" class="trackHeader"/>
     <engine:VisualElement name="itemContainer"/>
   </engine:VisualElement>
 </engine:UXML>

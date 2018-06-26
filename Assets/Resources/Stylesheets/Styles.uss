@@ -63,23 +63,43 @@
     flex: 1;
 }
 
+/* Tracks */
+
 #timeline > ListView {
     flex: 1;
+    margin-top: 5;
 }
 
-#itemContainer {
+.track /*whole track*/
+{
+    height: 50;
+    padding-bottom:5;
+    flex-direction: row;
+}
+
+.trackHeader
+{
+    background-color: #000000;
+    width: 140;
+    padding-top:0;
+    margin-top:0;
+    padding-bottom:0;
+    margin-bottom:0;
+    margin-right:5;
+    text-alignment: middle-center;
+    text-color: #ffffff;
+}
+
+#itemContainer { /* recorded item container */
     flex: 1;
+    background-color: rgb(100, 100, 100);
+    margin-left:1;
 }
 
-#timeline > ListView .item {
+#timeline > ListView .item { /* recorded item */
     border-color: #ff0000;
     background-color: #00ff00;
-    border-left-width: 1;
-    border-right-width: 1;
-    border-top-width: 1;
-    border-bottom-width: 1;
-
     position-type: absolute;
-/*    position-left: 150;
-    position-top: 10;*/
 }
+
+
