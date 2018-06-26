@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GameDebugger 
 {
-    public class TimeAreaGUI
+    class TimeAreaGUI
     {
         object m_TimeArea;
         Rect m_LastRect;
