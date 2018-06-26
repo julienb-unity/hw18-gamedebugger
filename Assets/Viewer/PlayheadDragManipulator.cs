@@ -82,6 +82,8 @@ namespace GameDebugger
         void SetTimeSnappedToFrameFromPixel(float pixel)
         {
             var time = GetTimeForPixel(pixel);
+            if (time < 0)
+                return;
             SetTime(Mathf.Round(time));
         }
 
