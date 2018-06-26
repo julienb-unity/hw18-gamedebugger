@@ -12,6 +12,39 @@ namespace GameDebugger
         ListView m_ListView;
         ITimeConverter m_TimeConverter;
 
+        class KeyContainer : VisualElement
+        {
+            public List<int> keys;
+            private ITimeConverter m_TimeConverter;
+
+            public KeyContainer(ITimeConverter timeConverter)
+            {
+                m_TimeConverter = timeConverter;
+            }
+
+            public override void DoRepaint()
+            {
+                foreach (var key in keys)
+                {
+                    var x = m_TimeConverter.TimeToPixel(key);
+                    GUI.Label(new Rect(x, 15, 20, 20), new GUIContent(key.ToString()), EditorStyles.helpBox);
+                }
+            }
+        }
+
+        class Track : VisualElement
+        {
+            public KeyContainer KeyContainer;
+
+            public Track(VisualTreeAsset itemTemplate, ITimeConverter timeConverter)
+            {
+                itemTemplate.CloneTree(this, null);
+
+                KeyContainer = new KeyContainer(timeConverter);
+                this.Q(className: "track").Add(KeyContainer);
+            }
+        }
+
         // Keys by Instance ID.
         private Dictionary<int, List<int>> m_InstanceIdKeyMap = new Dictionary<int, List<int>>(300);
         private int numFrames;
@@ -22,7 +55,7 @@ namespace GameDebugger
             
             var itemTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackItem");
             
-            m_ListView = new ListView(new List<int>(), 50, () => itemTemplate.CloneTree(null), DrawItem);
+            m_ListView = new ListView(new List<int>(), 50, () => new Track(itemTemplate, m_TimeConverter), DrawItem);
             m_ListView.selectionType = SelectionType.None;
             Add(m_ListView);
             
@@ -40,17 +73,10 @@ namespace GameDebugger
             var instanceId = instanceIdList[index];
             UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceId);
             elt.Q<Label>().text = o.name;
+            Track trackItem = (Track) elt;
+            trackItem.KeyContainer.keys = m_InstanceIdKeyMap[instanceId];
 
-            var container = elt.Q("itemContainer");
-            container.Clear();
-            foreach (var key in m_InstanceIdKeyMap[instanceId])
-            {
-                var item = new Label(key.ToString());
-                item.style.positionLeft = key * 1.2f;
-                item.AddToClassList("item");
-                container.Add(item);
-            }
-            DrawClipAtTime(container, 100.0f, 150.0f, "Clip");
+            DrawClipAtTime(trackItem.KeyContainer, 100.0f, 150.0f, "Clip");
         }
 
         void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)

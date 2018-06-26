@@ -30,8 +30,8 @@
 
 #playhead
 {
-    position-type:absolute;
-    flex-direction:column-reverse;
+    position-type: absolute;
+    flex-direction: column-reverse;
     position-left : 150; /* should match #timeArea position-left*/
 }
 
@@ -40,22 +40,22 @@
     background-color: rgba(150, 0, 0, 255);
     height: 25;
     width: 6;
-    background-image:none;
-    margin-top:25;
+    background-image: none;
+    margin-top: 25;
 }
 
 #playheadLine
 {
     background-color: rgba(150, 0, 0, 255);
     width: 2;
-    background-image:none;
+    background-image: none;
     margin-left: 2.4;
     height: 5000;
 }
 
 #dragSlider
 {
-    margin-top:25;
+    margin-top: 25;
     height: 25;
 }
 
@@ -77,7 +77,7 @@
 .track /*whole track*/
 {
     height: 50;
-    padding-bottom:5;
+    padding-bottom: 5;
     flex-direction: row;
 }
 
@@ -85,23 +85,25 @@
 {
     background-color: #000000;
     width: 140;
-    padding-top:0;
-    margin-top:0;
-    padding-bottom:0;
-    margin-bottom:0;
-    margin-right:5;
+    padding-top: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    margin-right: 5;
     text-alignment: middle-center;
     text-color: #ffffff;
 }
 
-#itemContainer { /* recorded item container */
-    flex: 1;
-    flex-direction:row;
+KeyContainer { /* recorded item container */
+    position-type: absolute;
+    position-left: 0;
+    position-right: 0;
+    height: 50;
     background-color: rgb(100, 100, 100);
-    margin-left:1;
+    margin-left: 1;
 }
 
-#timeline > ListView .item { /* recorded item */
+.item { /* recorded item */
     border-color: #ff0000;
     background-color: #00ff00;
     position-type: absolute;
@@ -110,11 +112,11 @@
 /* Track elements */
 
 .clip{
-    position-type:absolute;
-    background-image:none;
+    position-type: absolute;
+    background-image: none;
     background-color: rgb(60, 120, 170);
     height: 50;
-    margin-left:-150;
+    /*margin-left: -150;*/
 }
 
 
