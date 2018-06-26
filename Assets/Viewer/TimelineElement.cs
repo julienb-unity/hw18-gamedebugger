@@ -6,8 +6,6 @@ namespace GameDebugger
 {
     class TimelineElement : VisualElement
     {
-        TimeAreaGUI m_TimeAreaGUI = new TimeAreaGUI();
-
         public TimelineElement(TimeManager timeMgr, RefreshScheduler scheduler)
         {
             name = "timeline";
@@ -17,22 +15,24 @@ namespace GameDebugger
             timeArea.name = "timeArea";
             Add(timeArea);
             
+            var timeAreaGUI = new TimeAreaGUI();
             var imguiContainer = new IMGUIContainer(() =>
             {
-                m_TimeAreaGUI.OnGUI(timeArea.layout);
+                timeAreaGUI.OnGUI(timeArea.layout);
             });
             imguiContainer.name = "timeAreaGUI";
             timeArea.Add(imguiContainer);
             imguiContainer.StretchToParentSize();
-            
-            var playhead = new PlayheadElement(timeMgr, m_TimeAreaGUI);
+
+            var timeProvider = new TimeConverter(timeAreaGUI);
+            var playhead = new PlayheadElement(timeMgr, timeProvider);
             playhead.name = "playhead";
             Add(playhead);
             
             imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
             
-            var trackContainer = new TrackContainer(scheduler);
+            var trackContainer = new TrackContainer(timeProvider, scheduler);
             Add(trackContainer);
             
             //playhead needs to be on top of the tracks

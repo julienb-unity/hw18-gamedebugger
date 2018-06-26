@@ -17,9 +17,12 @@ namespace GameDebugger
         }
         
         ListView m_ListView;
+        ITimeConverter m_TimeConverter;
 
-        public TrackContainer(RefreshScheduler scheduler)
+        public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
         {
+            m_TimeConverter = timeConverter;
+            
             var itemTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackItem");
             
             m_ListView = new ListView(new List<int>(), 50, () => itemTemplate.CloneTree(null), DrawItem);
