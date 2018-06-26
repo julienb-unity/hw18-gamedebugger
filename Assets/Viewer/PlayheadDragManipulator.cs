@@ -5,7 +5,6 @@ namespace GameDebugger
 {
     class PlayheadDragManipulator : MouseManipulator
     {
-        Vector2 m_Start;
         bool m_Active;
 
         PlayheadElement m_Playhead;
@@ -41,8 +40,6 @@ namespace GameDebugger
 
             if (CanStartManipulation(e))
             {
-                m_Start = e.localMousePosition;
-
                 m_Active = true;
 
                 target.TakeMouseCapture();
