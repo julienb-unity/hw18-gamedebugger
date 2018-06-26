@@ -1,7 +1,9 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
-namespace GameDebugger {
+namespace GameDebugger 
+{
     class PlayheadElement : VisualElement
     {
         TimeManager m_TimeManager;
@@ -22,10 +24,16 @@ namespace GameDebugger {
             Add(playheadCursor);
         }
 
-        public void SetTimeFromPixel(float pixel)
+        public void SetTime(float time)
         {
+            var pixel = m_TimeAreaGUI.TimeToPixel(time);
             style.positionLeft = pixel - contentRect.width/2.0f;
-            m_TimeManager.time = m_TimeAreaGUI.PixelToTime(pixel);
+            m_TimeManager.time = (int)Mathf.Floor(time);
+        }
+
+        public float GetTimeForPixel(float pixel)
+        {
+            return m_TimeAreaGUI.PixelToTime(pixel);
         }
     }
 }

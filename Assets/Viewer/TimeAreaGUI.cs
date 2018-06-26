@@ -65,7 +65,7 @@ namespace GameDebugger
             m_LastRect = rect;
             m_TimeAreaRect.SetValue(m_TimeArea, rect, null);
             m_BeginView.Invoke(m_TimeArea, null);
-            m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 60.0f});
+            m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 1.0f});
             m_EndView.Invoke(m_TimeArea, null);
         }
     }

@@ -46,7 +46,7 @@ namespace GameDebugger
                 m_Active = true;
 
                 target.TakeMouseCapture();
-                SetTimeForPixel(e.mousePosition.x);
+                SetTimeSnappedToFrameFromPixel(e.mousePosition.x);
                 
                 e.StopPropagation();
             }
@@ -56,7 +56,7 @@ namespace GameDebugger
         {
             if (m_Active)
             {
-                SetTimeForPixel(e.mousePosition.x);
+                SetTimeSnappedToFrameFromPixel(e.mousePosition.x);
                 e.StopPropagation();
             }
         }
@@ -74,9 +74,20 @@ namespace GameDebugger
             }
         }
 
-        void SetTimeForPixel(float pixel)
+        void SetTime(float time)
         {
-            m_Playhead.SetTimeFromPixel(pixel);
+            m_Playhead.SetTime(time);
+        }
+
+        void SetTimeSnappedToFrameFromPixel(float pixel)
+        {
+            var time = GetTimeForPixel(pixel);
+            SetTime(Mathf.Round(time));
+        }
+
+        float GetTimeForPixel(float pixel)
+        {
+            return m_Playhead.GetTimeForPixel(pixel);
         }
     }
 }
