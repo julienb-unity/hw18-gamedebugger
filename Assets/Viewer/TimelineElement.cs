@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
-using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GameDebugger
 {
@@ -25,16 +24,17 @@ namespace GameDebugger
             timeArea.Add(imguiContainer);
             imguiContainer.StretchToParentSize();
             
-            var playhead = new PlayheadElement(timeMgr, m_TimeAreaGUI);
-            playhead.name = "playhead";
-            timeArea.Add(playhead);
-            
-            imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
-            playhead.AddManipulator(new PlayheadDragManipulator(playhead));
-
             var tracks = new GameDebuggerTracks();
             tracks.name = "tracks";
             Add(tracks);
+            
+            //the playhead needs to be added at the very end, since it needs to be drawn on top of the tracks
+            var playhead = new PlayheadElement(timeMgr, m_TimeAreaGUI);
+            playhead.name = "playhead";
+            Add(playhead);
+            
+            imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
+            playhead.AddManipulator(new PlayheadDragManipulator(playhead));
         }
     }
 }
