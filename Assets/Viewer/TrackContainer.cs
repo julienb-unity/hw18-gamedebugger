@@ -18,7 +18,7 @@ namespace GameDebugger
         
         ListView m_ListView;
         ITimeConverter m_TimeConverter;
-
+        
         public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
         {
             m_TimeConverter = timeConverter;
@@ -52,6 +52,19 @@ namespace GameDebugger
                 item.AddToClassList("item");
                 container.Add(item);
             }
+            DrawClipAtTime(container, 100.0f, 150.0f, "Clip");
+        }
+
+        void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)
+        {
+            var clip = new Box();
+            var startPixelPos = m_TimeConverter.TimeToPixel(time);
+            clip.style.positionLeft = startPixelPos;
+            clip.AddToClassList("clip");
+            clip.Add(new Label(label));
+            var widthInPixels = m_TimeConverter.TimeToPixel(end) - startPixelPos;
+            clip.style.width = widthInPixels;
+            trackContainer.Add(clip);
         }
         
         void RefreshTracks()

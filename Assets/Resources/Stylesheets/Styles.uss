@@ -96,6 +96,7 @@
 
 #itemContainer { /* recorded item container */
     flex: 1;
+    flex-direction:row;
     background-color: rgb(100, 100, 100);
     margin-left:1;
 }
@@ -104,6 +105,16 @@
     border-color: #ff0000;
     background-color: #00ff00;
     position-type: absolute;
+}
+
+/* Track elements */
+
+.clip{
+    position-type:absolute;
+    background-image:none;
+    background-color: rgb(60, 120, 170);
+    height: 50;
+    margin-left:-150;
 }
 
 
