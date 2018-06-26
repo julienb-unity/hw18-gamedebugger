@@ -29,6 +29,8 @@ namespace GameDebugger
             var pixel = m_TimeAreaGUI.TimeToPixel(time);
             style.positionLeft = pixel - contentRect.width/2.0f;
             m_TimeManager.time = (int)Mathf.Floor(time);
+            
+            GameDebuggerPlayer.ReplayFrame(m_TimeManager.time);
         }
 
         public float GetTimeForPixel(float pixel)

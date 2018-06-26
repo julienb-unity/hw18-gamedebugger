@@ -24,6 +24,20 @@ namespace GameDebugger
 
             var header = new HeaderElement();
             var timelineElement = new TimelineElement(m_TimeMgr);
+                        
+            EditorApplication.playModeStateChanged += (state) =>
+            {
+                if (state == PlayModeStateChange.EnteredPlayMode)
+                {
+                    timelineElement.SetEnabled(true);
+                }
+                else if (state == PlayModeStateChange.ExitingPlayMode)
+                {
+                    timelineElement.SetEnabled(false);
+                }
+            };
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                timelineElement.SetEnabled(true);
 
             root.Add(header);
             root.Add(timelineElement);

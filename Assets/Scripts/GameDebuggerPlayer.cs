@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿using System.Security.Policy;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [InitializeOnLoad]
 public static class GameDebuggerPlayer
@@ -37,12 +40,12 @@ public static class GameDebuggerPlayer
 		if (!isPlaying)
 			return;
 
-		if (ReplayFrame(m_frame)) return;
-
-		m_frame++;
+//		if (ReplayFrame(m_frame)) return;
+//
+//		m_frame++;
 	}
 
-	private static bool ReplayFrame(int frame)
+	public static bool ReplayFrame(int frame)
 	{
 		StartReplay();
 		
@@ -52,14 +55,7 @@ public static class GameDebuggerPlayer
 			return true;
 		}
 
-		foreach (var recordableInfo in GameDebuggerDatabase.GetRecords(frame))
-		{
-			var o = EditorUtility.InstanceIDToObject(recordableInfo.instanceID);
-			if (o != null)
-			{
-				recordableInfo.recordable.OnReplay(o);
-			}
-		}
+		GameDebuggerDatabase.ReplayFrame(frame);
 
 		return false;
 	}
