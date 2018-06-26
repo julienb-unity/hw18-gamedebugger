@@ -1,15 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
-using UnityEngine.SceneManagement;
-using Object = System.Object;
+﻿using UnityEditor;
 
 [InitializeOnLoad]
 public static class GameDebuggerPlayer
