@@ -65,9 +65,13 @@
 
 /* Tracks */
 
-#timeline > ListView {
+#timeline > TrackContainer > ListView {
     flex: 1;
     margin-top: 5;
+}
+
+#timeline > TrackContainer {
+    flex: 1;
 }
 
 .track /*whole track*/

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
-using Random = UnityEngine.Random;
 
 namespace GameDebugger
 {
@@ -11,22 +8,8 @@ namespace GameDebugger
     {
         TimeAreaGUI m_TimeAreaGUI = new TimeAreaGUI();
 
-        VisualTreeAsset m_ItemTemplate;
-        ListView m_ListView;
-
-        [MenuItem("Hackweek/Toggle auto reload")]
-        static void ToggleAutoReload()
-        {
-            const string key = "UIElements_UXMLLiveReload";
-            var b = EditorPrefs.GetBool(key, false);
-            EditorPrefs.SetBool(key, !b);
-            Debug.Log("Auto reload: " + !b);
-        }
-
         public TimelineElement(TimeManager timeMgr, RefreshScheduler scheduler)
         {
-            m_ItemTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackItem");
-
             name = "timeline";
             AddStyleSheetPath("Stylesheets/Styles");
             
@@ -42,60 +25,18 @@ namespace GameDebugger
             timeArea.Add(imguiContainer);
             imguiContainer.StretchToParentSize();
             
-            m_ListView = new ListView(new List<int>(), 50, () => m_ItemTemplate.CloneTree(null), DrawItem);
-            m_ListView.selectionType = SelectionType.None;
-            Add(m_ListView);
-
-            //the playhead needs to be added at the very end, since it needs to be drawn on top of the tracks
             var playhead = new PlayheadElement(timeMgr, m_TimeAreaGUI);
             playhead.name = "playhead";
             Add(playhead);
             
             imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
-
-            scheduler.ExitPlayMode += () =>
-            {
-                m_ListView.itemsSource = null;
-                m_ListView.Refresh();
-            };
-            scheduler.Refresh += RefreshTracks;
-        }
-
-        void RefreshTracks()
-        {
-            if (EditorApplication.isPaused)
-                return;
-
-            if (GameDebuggerDatabase.NumFrameRecords == 0)
-                return;
-
-            var instanceIdList = (List<int>)m_ListView.itemsSource;
-            var records = GameDebuggerDatabase.GetRecords(0);
-            foreach (var recordInfo in records)
-            {
-                UnityEngine.Object o = EditorUtility.InstanceIDToObject(recordInfo.instanceID);
-                instanceIdList.Add(recordInfo.instanceID);
-            }
-
-            m_ListView.Refresh();
-        }
-
-        void DrawItem(VisualElement elt, int index)
-        {
-            var instanceIdList = (List<int>)m_ListView.itemsSource;
-            UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceIdList[index]);
-            elt.Q<Label>().text = o.name;
-
-            var container = elt.Q("itemContainer");
-            container.Clear();
-            for (int j = 0; j < Random.RandomRange(3,8); j++)
-            {
-                var item = new Label(j.ToString());
-                item.style.positionLeft = j * 20;
-                item.AddToClassList("item");
-                container.Add(item);
-            }
+            
+            var trackContainer = new TrackContainer(scheduler);
+            Add(trackContainer);
+            
+            //playhead needs to be on top of the tracks
+            playhead.BringToFront();
         }
     }
 }

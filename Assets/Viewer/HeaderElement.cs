@@ -40,8 +40,6 @@ namespace GameDebugger
                 GameDebuggerRecorder.StopRecording();
             else
                 GameDebuggerRecorder.StartRecording();
-            
         }
-        
     }
 }
