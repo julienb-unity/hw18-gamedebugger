@@ -58,3 +58,28 @@
     margin-top:25;
     height: 25;
 }
+
+#timeline {
+    flex: 1;
+}
+
+#timeline > ListView {
+    flex: 1;
+}
+
+#itemContainer {
+    flex: 1;
+}
+
+#timeline > ListView .item {
+    border-color: #ff0000;
+    background-color: #00ff00;
+    border-left-width: 1;
+    border-right-width: 1;
+    border-top-width: 1;
+    border-bottom-width: 1;
+
+    position-type: absolute;
+/*    position-left: 150;
+    position-top: 10;*/
+}
