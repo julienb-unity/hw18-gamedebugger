@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using GameDebugger;
 using Recordables;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +14,7 @@ using UnityEngine.SceneManagement;
 public class GameDebuggerDatabase : ScriptableObject
 {
 	static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
-	static List<Dictionary<int, Recordable>> m_frameRecords = new List<Dictionary<int, Recordable>>();
+	static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
 	private static int m_frame;
 	public static int NumFrameRecords
 	{
@@ -54,11 +52,11 @@ public class GameDebuggerDatabase : ScriptableObject
 	public static void RecordFrame(int frame)
 	{
 		m_frame = frame;
-		m_frameRecords.Add(new Dictionary<int, Recordable>());
+		m_frameRecords.Add(new List<RecordableInfo>());
 		for (int i = 0; i < SceneManager.sceneCount; i++)
 		{
 			var scene = SceneManager.GetSceneAt(i);
-			foreach (var rootGameObject in scene.GetRootGameObjects(	))
+			foreach (var rootGameObject in scene.GetRootGameObjects())
 			{
 				RecordGameObject(rootGameObject);
 			}
@@ -74,7 +72,7 @@ public class GameDebuggerDatabase : ScriptableObject
 			{
 				var recordable = (Recordable)Activator.CreateInstance(type);
 				recordable.OnRecord(o);
-				m_frameRecords[m_frame][o.GetInstanceID()] = recordable;
+				m_frameRecords[m_frame].Add(new RecordableInfo(o.GetInstanceID(), recordable));
 			}
 		}
 	}
@@ -93,7 +91,7 @@ public class GameDebuggerDatabase : ScriptableObject
 		}
 	}
 
-	public static Dictionary<int, Recordable> GetRecords(int frame)
+	public static List<RecordableInfo> GetRecords(int frame)
 	{
 		return m_frameRecords[frame];
 	}

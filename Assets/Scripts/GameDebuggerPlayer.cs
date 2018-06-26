@@ -52,12 +52,12 @@ public static class GameDebuggerPlayer
 			return true;
 		}
 
-		foreach (var recordable in GameDebuggerDatabase.GetRecords(frame))
+		foreach (var recordableInfo in GameDebuggerDatabase.GetRecords(frame))
 		{
-			var o = EditorUtility.InstanceIDToObject(recordable.Key);
+			var o = EditorUtility.InstanceIDToObject(recordableInfo.instanceID);
 			if (o != null)
 			{
-				recordable.Value.OnReplay(o);
+				recordableInfo.recordable.OnReplay(o);
 			}
 		}
 
