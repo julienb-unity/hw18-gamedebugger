@@ -3,7 +3,7 @@ using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GameDebugger
 {
-    public class GameDebuggerTrack : VisualContainer
+    public class GameDebuggerTrack : VisualElement
     {
         public GameDebuggerTrack(string name)
         {

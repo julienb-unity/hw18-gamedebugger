@@ -5,16 +5,16 @@ using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GameDebugger
 {
-    class TimelineContainer : VisualContainer
+    class TimelineElement : VisualElement
     {
         TimeAreaGUI m_TimeAreaGUI = new TimeAreaGUI();
         
-        public TimelineContainer(TimeManager timeMgr)
+        public TimelineElement(TimeManager timeMgr)
         {
             name = "timeline";
             AddStyleSheetPath("Stylesheets/Styles");
             
-            var timeArea = new VisualContainer();
+            var timeArea = new VisualElement();
             timeArea.name = "timeArea";
             Add(timeArea);
             

@@ -3,9 +3,9 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    public class HeaderContainer : VisualContainer
+    public class HeaderElement : VisualElement
     {
-        public HeaderContainer()
+        public HeaderElement()
         {
             name = "header";
             AddToClassList("container");

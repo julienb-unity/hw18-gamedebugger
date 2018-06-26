@@ -3,7 +3,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    public class GameDebuggerTracks : VisualContainer
+    public class GameDebuggerTracks : VisualElement
     {
         List<GameDebuggerTrack> tracks = new List<GameDebuggerTrack>();
 

@@ -22,11 +22,11 @@ namespace GameDebugger
         {
             var root = this.GetRootVisualContainer();
 
-            var header = new HeaderContainer();
-            var timelineContainer = new TimelineContainer(m_TimeMgr);
+            var header = new HeaderElement();
+            var timelineElement = new TimelineElement(m_TimeMgr);
 
             root.Add(header);
-            root.Add(timelineContainer);
+            root.Add(timelineElement);
         }
     }
 }
