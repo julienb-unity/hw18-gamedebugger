@@ -14,6 +14,9 @@ namespace Recordables
         public override bool OnRecord(Recordable previous, Object source)
         {
             var t = source as Transform;
+            if (t.gameObject.isStatic)
+                return false;
+            
             var prev = previous as TransformRecordable;
 
             if (prev != null && prev.position == t.position && prev.rotation == t.rotation && prev.scale == t.localScale)
