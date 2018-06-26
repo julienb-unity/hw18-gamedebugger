@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 using Random = UnityEngine.Random;
@@ -13,9 +11,8 @@ namespace GameDebugger
     {
         TimeAreaGUI m_TimeAreaGUI = new TimeAreaGUI();
 
-        private IVisualElementScheduledItem m_RefreshScheduler;
-        private VisualTreeAsset m_ItemTemplate;
-        private ListView m_ListView;
+        VisualTreeAsset m_ItemTemplate;
+        ListView m_ListView;
 
         [MenuItem("Hackweek/Toggle auto reload")]
         static void ToggleAutoReload()
@@ -26,7 +23,7 @@ namespace GameDebugger
             Debug.Log("Auto reload: " + !b);
         }
 
-        public TimelineElement(TimeManager timeMgr)
+        public TimelineElement(TimeManager timeMgr, RefreshScheduler scheduler)
         {
             m_ItemTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackItem");
 
@@ -57,24 +54,15 @@ namespace GameDebugger
             imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
 
-            m_RefreshScheduler = schedule.Execute(RefreshTracks).Every(100);
-            m_RefreshScheduler.Pause();
-            EditorApplication.playModeStateChanged += (state) =>
+            scheduler.ExitPlayMode += () =>
             {
-                if (state == PlayModeStateChange.EnteredPlayMode)
-                {
-                    m_RefreshScheduler.Resume();
-                }
-                else if (state == PlayModeStateChange.ExitingPlayMode)
-                {
-                    m_RefreshScheduler.Pause();
-                    m_ListView.itemsSource = null;
-                    m_ListView.Refresh();
-                }
+                m_ListView.itemsSource = null;
+                m_ListView.Refresh();
             };
+            scheduler.Refresh += RefreshTracks;
         }
 
-        private void RefreshTracks()
+        void RefreshTracks()
         {
             if (EditorApplication.isPaused)
                 return;
@@ -93,7 +81,7 @@ namespace GameDebugger
             m_ListView.Refresh();
         }
 
-        private void DrawItem(VisualElement elt, int index)
+        void DrawItem(VisualElement elt, int index)
         {
             var instanceIdList = (List<int>)m_ListView.itemsSource;
             UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceIdList[index]);

@@ -73,7 +73,6 @@ namespace GameDebugger
             m_BeginView.Invoke(m_TimeArea, null);
             m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 1.0f});
             m_EndView.Invoke(m_TimeArea, null);
-            var numFrames = GameDebuggerDatabase.NumFrameRecords;
             var maxTime = GameDebuggerDatabase.NumFrameRecords < 100 ? 100 : GameDebuggerDatabase.NumFrameRecords;
             m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, (float)maxTime});
         }
