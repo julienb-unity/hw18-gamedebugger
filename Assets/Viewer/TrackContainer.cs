@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Recordables;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
@@ -7,18 +9,13 @@ namespace GameDebugger
 {
     class TrackContainer : VisualElement
     {
-        [MenuItem("Hackweek/Toggle auto reload")]
-        static void ToggleAutoReload()
-        {
-            const string key = "UIElements_UXMLLiveReload";
-            var b = EditorPrefs.GetBool(key, false);
-            EditorPrefs.SetBool(key, !b);
-            Debug.Log("Auto reload: " + !b);
-        }
-        
         ListView m_ListView;
         ITimeConverter m_TimeConverter;
-        
+
+        // Keys by Instance ID.
+        private Dictionary<int, List<int>> m_InstanceIdKeyMap = new Dictionary<int, List<int>>(300);
+        private int numFrames;
+
         public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
         {
             m_TimeConverter = timeConverter;
@@ -36,19 +33,20 @@ namespace GameDebugger
             };
             scheduler.Refresh += RefreshTracks;
         }
-       
-        void DrawItem(VisualElement elt, int index)
+
+        private void DrawItem(VisualElement elt, int index)
         {
             var instanceIdList = (List<int>)m_ListView.itemsSource;
-            UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceIdList[index]);
+            var instanceId = instanceIdList[index];
+            UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceId);
             elt.Q<Label>().text = o.name;
 
             var container = elt.Q("itemContainer");
             container.Clear();
-            for (int j = 0; j < Random.RandomRange(3,8); j++)
+            foreach (var key in m_InstanceIdKeyMap[instanceId])
             {
-                var item = new Label(j.ToString());
-                item.style.positionLeft = j * 20;
+                var item = new Label(key.ToString());
+                item.style.positionLeft = key * 1.2f;
                 item.AddToClassList("item");
                 container.Add(item);
             }
@@ -66,23 +64,44 @@ namespace GameDebugger
             clip.style.width = widthInPixels;
             trackContainer.Add(clip);
         }
-        
-        void RefreshTracks()
+
+        private void RefreshTracks()
         {
             if (EditorApplication.isPaused)
                 return;
 
-            if (GameDebuggerDatabase.NumFrameRecords == 0)
+            if (GameDebuggerDatabase.NumFrameRecords == numFrames)
                 return;
 
-            var instanceIdList = (List<int>)m_ListView.itemsSource;
-            var records = GameDebuggerDatabase.GetRecords(0);
-            foreach (var recordInfo in records)
+            // Get the new instance ID and the new keys.
+            for (var f = numFrames; f < GameDebuggerDatabase.NumFrameRecords; ++f)
             {
-                Object o = EditorUtility.InstanceIDToObject(recordInfo.instanceID);
-                instanceIdList.Add(recordInfo.instanceID);
+                var records = GameDebuggerDatabase.GetRecords(f);
+                foreach (var recordInfo in records)
+                {
+                    if (!m_InstanceIdKeyMap.ContainsKey(recordInfo.instanceID))
+                    {
+                        var keys = new List<int>(200) { f };
+                        m_InstanceIdKeyMap[recordInfo.instanceID] = keys;
+                    }
+                    else
+                    {
+                        var keys = m_InstanceIdKeyMap[recordInfo.instanceID];
+                        var tr = recordInfo.recordable as TransformRecordable;
+                        if (tr != null)
+                        {
+                            var lastRecords = GameDebuggerDatabase.GetRecords(keys.Last());
+                            var info = lastRecords.Find(recordableInfo => recordableInfo.instanceID == recordInfo.instanceID);
+                            if (!tr.ApproximatelyEquals((TransformRecordable)info.recordable))
+                                keys.Add(f);
+                        }
+                    }
+                }
             }
 
+            numFrames = GameDebuggerDatabase.NumFrameRecords;
+
+            m_ListView.itemsSource = m_InstanceIdKeyMap.Keys.ToList();
             m_ListView.Refresh();
         }
     }

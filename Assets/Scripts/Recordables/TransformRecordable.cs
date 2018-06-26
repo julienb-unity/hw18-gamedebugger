@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Recordables
 {
@@ -35,6 +37,11 @@ namespace Recordables
             component.gameObject.transform.position = position;
             component.gameObject.transform.rotation = rotation;
             component.gameObject.transform.localScale = scale;
+        }
+
+        public bool ApproximatelyEquals(TransformRecordable other)
+        {
+            return Vector3.Distance(position, other.position) <= 0.01f;
         }
     }
 }
