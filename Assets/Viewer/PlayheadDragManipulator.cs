@@ -3,14 +3,14 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class TimeDragManipulator : MouseManipulator
+    class PlayheadDragManipulator : MouseManipulator
     {
         Vector2 m_Start;
         bool m_Active;
 
         PlayheadElement m_Playhead;
 
-        public TimeDragManipulator(PlayheadElement playhead)
+        public PlayheadDragManipulator(PlayheadElement playhead)
         {
             m_Playhead = playhead;
             activators.Add(new ManipulatorActivationFilter { button = MouseButton.LeftMouse });
