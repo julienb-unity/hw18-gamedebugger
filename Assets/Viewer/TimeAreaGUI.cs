@@ -18,6 +18,7 @@ namespace GameDebugger
 
         public TimeAreaGUI()
         {
+            //Since the TimeArea is private, we need to get access to it by reflection, 
             var assembly = typeof(UnityEditor.Editor).Assembly;
             var timeAreaType = assembly.GetType("UnityEditor.TimeArea");
             m_TimeArea = Activator.CreateInstance(timeAreaType, new object[]{true, true, false});
@@ -58,6 +59,9 @@ namespace GameDebugger
             */
         public void OnGUI(Rect rect)
         {
+            if (float.IsNaN(rect.width) || float.IsNaN(rect.height))
+                return;
+            
             m_LastRect = rect;
             m_TimeAreaRect.SetValue(m_TimeArea, rect, null);
             m_BeginView.Invoke(m_TimeArea, null);
