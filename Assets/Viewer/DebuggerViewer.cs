@@ -19,6 +19,15 @@ namespace GameDebugger
             window.Show();
         }
 
+        [MenuItem("Hackweek/Toggle auto reload")]
+        static void ToggleAutoReload()
+        {
+            const string key = "UIElements_UXMLLiveReload";
+            var b = EditorPrefs.GetBool(key, false);
+            EditorPrefs.SetBool(key, !b);
+            Debug.Log("Auto reload: " + !b);
+        }
+
         public void OnEnable()
         {
             var root = this.GetRootVisualContainer();
