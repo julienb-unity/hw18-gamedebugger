@@ -2,7 +2,7 @@
 
 namespace Recordables
 {
-    public class TransformRecordable : RecordableComponent<Transform>
+    public class TransformRecordable : Recordable<Transform>
     {
         [SerializeField]
         private Vector3 position;    

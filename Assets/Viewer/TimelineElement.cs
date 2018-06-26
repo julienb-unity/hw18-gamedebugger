@@ -21,6 +21,7 @@ namespace GameDebugger
             {
                 m_TimeAreaGUI.OnGUI(timeArea.layout);
             });
+            imguiContainer.name = "timeAreaGUI";
             timeArea.Add(imguiContainer);
             imguiContainer.StretchToParentSize();
             

@@ -5,9 +5,9 @@ namespace GameDebugger
 {
     class TimeManager
     {
-        double m_Time;
+        int m_Time;
         
-        public double time 
+        public int time 
         {
             get
             {
