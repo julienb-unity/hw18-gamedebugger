@@ -7,6 +7,7 @@ namespace GameDebugger
     public class DebuggerViewer : EditorWindow
     {
         TimeManager m_TimeMgr = new TimeManager();
+        RefreshScheduler m_Scheduler;
         
         // Add menu named "My Window" to the Window menu
         [MenuItem("Window/GameDebugger")]
@@ -21,23 +22,10 @@ namespace GameDebugger
         public void OnEnable()
         {
             var root = this.GetRootVisualContainer();
+            m_Scheduler = new RefreshScheduler(root);
 
             var header = new HeaderElement();
-            var timelineElement = new TimelineElement(m_TimeMgr);
-                        
-            EditorApplication.playModeStateChanged += (state) =>
-            {
-                if (state == PlayModeStateChange.EnteredPlayMode)
-                {
-                    timelineElement.SetEnabled(true);
-                }
-                else if (state == PlayModeStateChange.ExitingPlayMode)
-                {
-                    timelineElement.SetEnabled(false);
-                }
-            };
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-                timelineElement.SetEnabled(true);
+            var timelineElement = new TimelineElement(m_TimeMgr, m_Scheduler);
 
             root.Add(header);
             root.Add(timelineElement);
