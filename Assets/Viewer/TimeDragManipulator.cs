@@ -46,6 +46,8 @@ namespace GameDebugger
                 m_Active = true;
 
                 target.TakeMouseCapture();
+                SetTimeForPixel(e.mousePosition.x);
+                
                 e.StopPropagation();
             }
         }
@@ -54,8 +56,7 @@ namespace GameDebugger
         {
             if (m_Active)
             {
-                var diff = e.localMousePosition - m_Start;
-                SetTimeForPixel(target.layout.x + diff.x);
+                SetTimeForPixel(e.mousePosition.x);
                 e.StopPropagation();
             }
         }
