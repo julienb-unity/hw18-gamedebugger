@@ -58,11 +58,25 @@ namespace GameDebugger
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
 
             m_RefreshScheduler = schedule.Execute(RefreshTracks).Every(100);
+            m_RefreshScheduler.Pause();
+            EditorApplication.playModeStateChanged += (state) =>
+            {
+                if (state == PlayModeStateChange.EnteredPlayMode)
+                {
+                    m_RefreshScheduler.Resume();
+                }
+                else if (state == PlayModeStateChange.ExitingPlayMode)
+                {
+                    m_RefreshScheduler.Pause();
+                    m_ListView.itemsSource = null;
+                    m_ListView.Refresh();
+                }
+            };
         }
 
         private void RefreshTracks()
         {
-            if (EditorApplication.isPaused || !EditorApplication.isPlaying)
+            if (EditorApplication.isPaused)
                 return;
 
             if (GameDebuggerDatabase.NumFrameRecords == 0)
@@ -73,8 +87,7 @@ namespace GameDebugger
             foreach (var recordInfo in records)
             {
                 UnityEngine.Object o = EditorUtility.InstanceIDToObject(recordInfo.instanceID);
-                if (o is GameObject)
-                    instanceIdList.Add(recordInfo.instanceID);
+                instanceIdList.Add(recordInfo.instanceID);
             }
 
             m_ListView.Refresh();
@@ -84,10 +97,7 @@ namespace GameDebugger
         {
             var instanceIdList = (List<int>)m_ListView.itemsSource;
             UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceIdList[index]);
-            if (o != null)
-                elt.Q<Label>().text = o.name;
-            else
-                elt.Q<Label>().text = "#################";
+            elt.Q<Label>().text = o.name;
 
             var container = elt.Q("itemContainer");
             container.Clear();
