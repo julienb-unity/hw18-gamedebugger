@@ -21,18 +21,18 @@
 
 #timeArea{
     height: 50;
-    margin-left: 100;
+    margin-left: 150;
 }
 
 #timeAreaGUI{
-    margin-left: -100; /*should match #timeArea position-left*/
+    margin-left: -150; /*should match #timeArea position-left*/
 }
 
 #playhead
 {
     position-type:absolute;
     flex-direction:column-reverse;
-    position-left : 100; /* should match #timeArea position-left*/
+    position-left : 150; /* should match #timeArea position-left*/
 }
 
 #playheadCursor
