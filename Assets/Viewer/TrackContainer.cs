@@ -15,7 +15,9 @@ namespace GameDebugger
         class KeyContainer : VisualElement
         {
             public List<int> keys;
-            private ITimeConverter m_TimeConverter;
+
+            private readonly ITimeConverter m_TimeConverter;
+            private readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
 
             public KeyContainer(ITimeConverter timeConverter)
             {
@@ -27,7 +29,7 @@ namespace GameDebugger
                 foreach (var key in keys)
                 {
                     var x = m_TimeConverter.TimeToPixel(key);
-                    GUI.Label(new Rect(x, 15, 20, 20), new GUIContent(key.ToString()), EditorStyles.helpBox);
+                    EditorGUI.DrawRect(new Rect(x - 3, 22, 6, 6), m_KeyColor);
                 }
             }
         }
@@ -36,12 +38,26 @@ namespace GameDebugger
         {
             public KeyContainer KeyContainer;
 
+            private readonly ITimeConverter m_TimeConverter;
+            private readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
+
             public Track(VisualTreeAsset itemTemplate, ITimeConverter timeConverter)
             {
+                m_TimeConverter = timeConverter;
+
                 itemTemplate.CloneTree(this, null);
 
-                KeyContainer = new KeyContainer(timeConverter);
+                KeyContainer = new KeyContainer(m_TimeConverter);
                 this.Q(className: "track").Add(KeyContainer);
+            }
+
+            public override void DoRepaint()
+            {
+                if (KeyContainer.keys.Count == 0)
+                    return;
+                var x = m_TimeConverter.TimeToPixel(KeyContainer.keys.First());
+                var w = contentRect.width;
+                EditorGUI.DrawRect(new Rect(x, 24, w, 1), m_LineColor);
             }
         }
 

@@ -111,7 +111,7 @@ KeyContainer { /* recorded item container */
 
 /* Track elements */
 
-.clip{
+.clip {
     position-type: absolute;
     background-image: none;
     background-color: rgb(60, 120, 170);
