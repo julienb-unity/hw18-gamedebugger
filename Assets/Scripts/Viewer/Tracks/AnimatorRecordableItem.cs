@@ -49,7 +49,7 @@ namespace GameDebugger
             for (int i = 0; i < count; i++)
             {
                 var leftTime = converter.TimeToPixel(m_LayerNames[i].time);
-                var rightTime = i+1 == count ? float.MaxValue : converter.TimeToPixel(m_LayerNames[i + 1].time);
+                var rightTime = i+1 == count ? track.contentRect.xMax + 10 : converter.TimeToPixel(m_LayerNames[i + 1].time);
                 var rect = track.contentRect;
                 rect.xMin = leftTime;
                 rect.xMax = rightTime;
