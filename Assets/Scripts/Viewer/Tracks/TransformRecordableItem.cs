@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Recordables;
 using UnityEditor;
 using UnityEngine;
@@ -45,7 +46,28 @@ namespace GameDebugger
         }
 
         public void OnClick(VisualElement panel, float time)
-        {}
+        {
+            var frameInfo = GameDebuggerDatabase.FrameRecords.FindLast(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
+            var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
+            DrawRecorderInfo(panel, recorderInfo.recordable);
+        }
+
+        static void DrawRecorderInfo(VisualElement panel, Recordable recorder)
+        {
+            var transformRecordable = recorder as TransformRecordable;
+            if (transformRecordable!= null)
+                panel.Add(new Label(TransformToString(transformRecordable)));
+        }
+
+        static string TransformToString(TransformRecordable rec)
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Transform: ");
+            stringBuilder.Append("Position ").Append(rec.localPosition).AppendLine();
+            stringBuilder.Append("Rotation ").Append(rec.localRotation).AppendLine();
+            stringBuilder.Append("Scale ").Append(rec.localScale).AppendLine();
+            return stringBuilder.ToString();
+        }
 
         void DrawBackground(Track track)
         {
