@@ -91,8 +91,6 @@ namespace GameDebugger
             elt.Q<Label>().text = o.name;
             Track trackItem = (Track) elt;
             trackItem.KeyContainer.keys = m_InstanceIdKeyMap[instanceId];
-
-            DrawClipAtTime(trackItem.KeyContainer, 100.0f, 150.0f, "Clip");
         }
 
         void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)
