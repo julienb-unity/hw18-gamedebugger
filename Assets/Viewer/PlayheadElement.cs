@@ -6,12 +6,10 @@ namespace GameDebugger
 {
     class PlayheadElement : VisualElement
     {
-        TimeManager m_TimeManager;
         ITimeConverter m_TimeConverter;
         
-        public PlayheadElement(TimeManager timeMgr, ITimeConverter timeConverter)
+        public PlayheadElement(ITimeConverter timeConverter)
         {
-            m_TimeManager = timeMgr;
             m_TimeConverter = timeConverter;
             
             var playheadCursor = new Box();
@@ -28,9 +26,8 @@ namespace GameDebugger
         {
             var pixel = m_TimeConverter.TimeToPixel(time);
             style.positionLeft = pixel - contentRect.width/2.0f;
-            m_TimeManager.time = (int)Mathf.Floor(time);
             
-            GameDebuggerRecorder.ReplayFrame(m_TimeManager.time);
+            GameDebuggerRecorder.ReplayFrame((int)time); //TODO DONT CAST AS INT!
         }
 
         public float GetTimeForPixel(float pixel)

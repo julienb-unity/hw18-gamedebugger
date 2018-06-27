@@ -13,7 +13,6 @@ namespace GameDebugger
 
     class DebuggerViewer : EditorWindow
     {
-        TimeManager m_TimeMgr = new TimeManager();
         RefreshScheduler m_Scheduler;
         ViewState m_State = new ViewState();
         
@@ -42,7 +41,7 @@ namespace GameDebugger
             m_Scheduler = new RefreshScheduler(root);
 
             var header = new HeaderElement(m_State);
-            var timelineElement = new TimelineElement(m_TimeMgr, m_Scheduler);
+            var timelineElement = new TimelineElement(m_Scheduler);
 
             root.Add(header);
             root.Add(timelineElement);

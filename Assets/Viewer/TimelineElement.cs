@@ -4,7 +4,7 @@ namespace GameDebugger
 {
     class TimelineElement : VisualElement
     {
-        public TimelineElement(TimeManager timeMgr, RefreshScheduler scheduler)
+        public TimelineElement(RefreshScheduler scheduler)
         {
             name = "timeline";
             AddStyleSheetPath("Stylesheets/Styles");
@@ -23,7 +23,7 @@ namespace GameDebugger
             imguiContainer.StretchToParentSize();
 
             var timeProvider = new TimeConverter(timeAreaGUI);
-            var playhead = new PlayheadElement(timeMgr, timeProvider);
+            var playhead = new PlayheadElement(timeProvider);
             playhead.name = "playhead";
             Add(playhead);
 
