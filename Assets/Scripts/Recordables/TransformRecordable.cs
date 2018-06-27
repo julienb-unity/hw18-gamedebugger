@@ -8,11 +8,11 @@ namespace Recordables
     public class TransformRecordable : Recordable<Transform>
     {
         [SerializeField]
-        private Vector3 position;    
+        private Vector3 localPosition;
         [SerializeField]
-        private Quaternion rotation;    
+        private Quaternion localRotation;
         [SerializeField]
-        private Vector3 scale;    
+        private Vector3 localScale;
 
         public override bool OnRecord(Recordable previous, Object source)
         {
@@ -22,12 +22,12 @@ namespace Recordables
             
             var prev = previous as TransformRecordable;
 
-            if (prev != null && prev.position == t.position && prev.rotation == t.rotation && prev.scale == t.localScale)
+            if (prev != null && prev.localPosition == t.position && prev.localRotation == t.rotation && prev.localScale == t.localScale)
                 return false;
             
-            position = t.position;
-            rotation = t.rotation;
-            scale = t.localScale;
+            localPosition = t.localPosition;
+            localRotation = t.localRotation;
+            localScale = t.localScale;
 
             return true;
         }
@@ -35,14 +35,14 @@ namespace Recordables
         public override void OnReplay(Object source)
         {
             var component = source as Component;
-            component.gameObject.transform.position = position;
-            component.gameObject.transform.rotation = rotation;
-            component.gameObject.transform.localScale = scale;
+            component.gameObject.transform.localPosition = localPosition;
+            component.gameObject.transform.localRotation = localRotation;
+            component.gameObject.transform.localScale = localScale;
         }
 
         public bool ApproximatelyEquals(TransformRecordable other)
         {
-            return Vector3.Distance(position, other.position) <= 0.01f;
+            return Vector3.Distance(localPosition, other.localPosition) <= 0.01f;
         }
     }
 }
