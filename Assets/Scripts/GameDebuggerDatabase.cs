@@ -177,6 +177,17 @@ public class GameDebuggerDatabase
 	{
 		return m_frameRecords[frame];
 	}
+	
+	public static void ReplayTime(float time)
+	{
+		if (NumFrameRecords <= 0)
+			return;
+		int frame = NumFrameRecords -1;
+		while (m_frameRecords[frame].time > time)
+			frame--;
+		if (frame>=0)
+			ReplayFrame(frame);
+	}
 
 	public static void ReplayFrame(int frame)
 	{
@@ -190,14 +201,6 @@ public class GameDebuggerDatabase
 					recordableInfo.recordable.OnReplay(obj);
 			}
 		}
-//		for (int i = 0; i < SceneManager.sceneCount; i++)
-//		{
-//			var scene = SceneManager.GetSceneAt(i);
-//			foreach (var rootGameObject in scene.GetRootGameObjects())
-//			{
-//				ReplayGameObject(frame, rootGameObject);
-//			}
-//		}
 	}
 
 	private static void ReplayGameObject(int frame, GameObject gameObject)
