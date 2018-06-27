@@ -66,9 +66,8 @@ namespace GameDebugger
 
         void DrawLine(Track track, ITimeConverter converter)
         {
-            var frameTime = GameDebuggerDatabase.GetRecords(m_FrameIds.First()).time;
-            var x = converter.TimeToPixel(frameTime);
-            var w = track.contentRect.width;
+            var x = converter.TimeToPixel(0);
+            var w = converter.TimeToPixel(Time.unscaledTime - GameDebuggerDatabase.StartRecordingTime) - x;
             EditorGUI.DrawRect(new Rect(x, 24, w, 1), m_LineColor);
         }
     }

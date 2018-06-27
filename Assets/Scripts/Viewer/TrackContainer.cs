@@ -11,14 +11,16 @@ namespace GameDebugger
     {
         ListView m_ListView;
         ITimeConverter m_TimeConverter;
+        VisualElement m_ExtraViwer;
 
         // Keys by Instance ID.
         Dictionary<int, ITrackItem> m_TrackItemByInstance = new Dictionary<int, ITrackItem>();
         int numFrames;
 
-        public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
+        public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler, VisualElement extraViewer)
         {
             m_TimeConverter = timeConverter;
+            m_ExtraViwer = extraViewer;
             
             var trackTemplate = Resources.Load<VisualTreeAsset>("Replay/GameDebuggerTrackTemplate");
             

@@ -32,6 +32,11 @@ public class GameDebuggerDatabase
 		set { m_frameRecords = value; }
 	}
 
+	public static float StartRecordingTime
+	{
+		get { return m_StartRecordingTime; }
+	}
+
 	public static void Init()
 	{
 		List<Type> recordables = new List<Type>();
