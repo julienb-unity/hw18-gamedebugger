@@ -10,7 +10,7 @@ using UnityEditor;
 public class GameDebuggerRecorder
 {
 	public static bool IsRecording;
-	public static int currentFrame ;
+	public static int currentFrame;
 	public static bool isPlaying;
 	public static bool isPaused;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using GameDebugger;
 using Recordables;
 using UnityEditor;
@@ -12,12 +13,6 @@ using UnityEngine;
 //   - Provide API for the editor window to send data
 public class GameDebuggerDatabase
 {
-	public class FrameInfo
-	{
-		public float time;
-		public List<RecordableInfo> records = new List<RecordableInfo>(100);
-	}
-
 	public static event Action<List<GameObject>> FilteredGameObjects;
 	private static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
 	private static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();

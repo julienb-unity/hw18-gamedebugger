@@ -9,23 +9,9 @@ using Debug = UnityEngine.Debug;
 public class GameDebuggerSerializer 
 {
 	[Serializable]
-	public class FrameInfo
-	{
-		public List<string> RecordableInfoJsons;
-		
-		public FrameInfo(List<string> recordableInfoJsons)
-		{
-			RecordableInfoJsons = recordableInfoJsons;
-		}
-		public FrameInfo()
-		{
-		}
-	}
-	
-	[Serializable]
 	public class Recording
 	{
-		public List<FrameInfo> FrameInfos;
+		public List<string> FrameInfos;
 	}
 
 	private static string filePath = "Assets/dump.json";
@@ -33,16 +19,11 @@ public class GameDebuggerSerializer
 	public static void DumpToFile()
 	{
 		Recording r = new Recording();
-		r.FrameInfos = new List<FrameInfo>();
+		r.FrameInfos = new List<string>();
 
 		foreach (var frameData in GameDebuggerDatabase.FrameRecords)
 		{
-			var list = new List<string>();
-			foreach (var recordableInfo in frameData.records)
-			{
-				list.Add(recordableInfo.ToJson());
-			}
-			r.FrameInfos.Add(new FrameInfo(list));
+			r.FrameInfos.Add(frameData.ToJson());
 		}
 		Stopwatch s = new Stopwatch();
 		s.Start();
@@ -58,16 +39,11 @@ public class GameDebuggerSerializer
 	{
 		if (!File.Exists(filePath)) return false;
 		var rec = JsonUtility.FromJson<Recording>(File.ReadAllText(filePath));
-		List<GameDebuggerDatabase.FrameInfo> frameRecords = new List<GameDebuggerDatabase.FrameInfo>();
+		List<FrameInfo> frameRecords = new List<FrameInfo>();
 		
 		foreach (var frameData in rec.FrameInfos)
 		{
-			var list = new GameDebuggerDatabase.FrameInfo();
-			foreach (var recordableInfoJson in frameData.RecordableInfoJsons)
-			{
-				list.records.Add(RecordableInfo.FromJson(recordableInfoJson));
-			}
-			frameRecords.Add(list);
+			frameRecords.Add(FrameInfo.FromJson(frameData));
 		}
 
 		GameDebuggerDatabase.FrameRecords = frameRecords;
