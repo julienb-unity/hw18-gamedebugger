@@ -11,26 +11,86 @@ using UnityEditor;
 public class GameDebuggerRecorder
 {
 	public static bool isRecording;
-	public static Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
+	private static Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
 
-	private static int m_currentFrame ;
-	
+	public static int currentFrame ;
+	public static bool isPlaying;
+	public static bool isPaused;
+
 	static GameDebuggerRecorder()
 	{
 		var go = new GameObject("GameDebugger");
 		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		go.AddComponent<GameDebuggerBehaviour>();
 
+		EditorApplication.update += EditorUpdate; 
+
 		GameDebuggerDatabase.Init();
+	}
+
+	private static void EditorUpdate()
+	{
+		if (isPlaying && !isPaused)
+		{
+			ReplayFrame(currentFrame);
+			currentFrame++;
+			if (currentFrame >= GameDebuggerDatabase.NumFrameRecords)
+				isPlaying = false;
+		}	
+	}
+
+	public static void StartReplay()
+	{
+		if (!isPlaying)
+		{
+			if (isRecording)
+				StopRecording();
+
+			isPaused = false;
+			isPlaying = true;
+			if (currentFrame >= GameDebuggerDatabase.NumFrameRecords)
+				currentFrame = 0;
+		}
+	}
+
+	public static void PauseReplay()
+	{
+		if (isPlaying)
+		{
+			isPaused = true;
+		}
+	}
+
+	public static void StopReplay()
+	{
+		isPlaying = false;
+		currentFrame = 0;
+		isPaused = false;
+	}
+	
+	public static bool ReplayFrame(int frame)
+	{
+		if (frame >= GameDebuggerDatabase.NumFrameRecords)
+		{
+			return true;
+		}
+
+		EditorApplication.isPaused = true;
+		GameDebuggerDatabase.ReplayFrame(frame);
+
+		return false;
 	}
 
 	public static void StartRecording()
 	{
+		if (isPlaying)
+			StopReplay();
+		
 		if (isRecording)
 			return;
 
 		GameDebuggerDatabase.Clear();
-		m_currentFrame = 0;
+		currentFrame = 0;
 
 
 		isRecording = true;
@@ -57,9 +117,9 @@ public class GameDebuggerRecorder
 		if (!isRecording)
 			return;
 
-		GameDebuggerDatabase.RecordFrame(m_currentFrame);
+		GameDebuggerDatabase.RecordFrame(currentFrame);
 		
-		m_currentFrame ++;
+		currentFrame ++;
 		//recorderDataStorage.RecordNewFrame();
 	}
 }
