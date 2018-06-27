@@ -113,7 +113,6 @@ public class GameDebuggerRecorder
 		UnityEngine.Object.DestroyImmediate(m_UpdaterGo);
 
 		Debug.LogFormat("Recorded {0} frames",GameDebuggerDatabase.NumFrameRecords);
-		GameDebuggerSerializer.DumpToFile();
 	}
 
 	public static void Update()

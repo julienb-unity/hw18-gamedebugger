@@ -150,7 +150,7 @@ public class GameDebuggerDatabase
 				if (!m_sync)
 					m_sessionRecords.TryGetValue(o.GetInstanceID(), out previous);
 	
-				if (recordable.OnRecord(previous,o))
+				if (recordable.OnRecord(previous, o))
 				{
 					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(), recordable));
 					m_sessionRecords[o.GetInstanceID()] = recordable;

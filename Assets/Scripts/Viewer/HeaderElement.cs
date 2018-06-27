@@ -33,6 +33,12 @@ namespace GameDebugger
                 name = "loadLastRecordingButton",
                 text = "Load last recording"
             });
+            
+            Add(new Button(OnSaveRecording)
+            {
+                name = "saveRecordingButton",
+                text = "Save recording"
+            });
 
             var toggle = new Toggle(OnToggle)
             {
@@ -89,6 +95,13 @@ namespace GameDebugger
             {
                 Debug.LogError("Cant load replay data from file");
             }
+        }
+        
+        static void OnSaveRecording()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+            GameDebuggerSerializer.DumpToFile();
         }
     }
 }

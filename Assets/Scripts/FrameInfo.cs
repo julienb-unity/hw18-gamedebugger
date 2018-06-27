@@ -8,6 +8,8 @@ namespace GameDebugger
 	public class FrameInfo
 	{
 		public float time;
+		
+		[NonSerialized]
 		public List<RecordableInfo> records = new List<RecordableInfo>(100);
 		
 		// dummy list used to hack json serialization

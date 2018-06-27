@@ -18,6 +18,9 @@ public class GameDebuggerSerializer
 
 	public static void DumpToFile()
 	{
+		Stopwatch s = new Stopwatch();
+		s.Start();
+		
 		Recording r = new Recording();
 		r.FrameInfos = new List<string>();
 
@@ -25,8 +28,6 @@ public class GameDebuggerSerializer
 		{
 			r.FrameInfos.Add(frameData.ToJson());
 		}
-		Stopwatch s = new Stopwatch();
-		s.Start();
 		
 		File.WriteAllText(filePath, JsonUtility.ToJson(r, true));
 		

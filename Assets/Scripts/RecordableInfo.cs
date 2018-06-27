@@ -10,7 +10,7 @@ namespace GameDebugger
 	{
 		public int instanceID;
 		
-		[SerializeField]
+		[NonSerialized]
 		public Recordable recordable;
 
 		public RecordableInfo()
@@ -24,9 +24,10 @@ namespace GameDebugger
 		}
 
 		// JsonUtility cant serialize extended types so need to save dynamic type separatly
+		static StringBuilder sb = new StringBuilder();
 		public string ToJson()
 		{
-			StringBuilder sb = new StringBuilder();
+			sb.Length = 0;
 			sb.Append(instanceID);
 			sb.Append("&");
 			sb.Append(recordable.GetType().FullName);

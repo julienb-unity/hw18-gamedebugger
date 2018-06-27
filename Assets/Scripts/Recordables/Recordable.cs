@@ -19,11 +19,5 @@ namespace Recordables
     [Serializable]
     public class Recordable<T> : Recordable where T : Object
     {
-        public string TypeName;
-
-        public Recordable()
-        {
-            TypeName = typeof(T).FullName;
-        }
     }
 }
