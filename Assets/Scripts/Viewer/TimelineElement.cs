@@ -1,4 +1,6 @@
-﻿using UnityEngine.Experimental.UIElements;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
@@ -21,7 +23,7 @@ namespace GameDebugger
             imguiContainer.name = "timeAreaGUI";
             timeArea.Add(imguiContainer);
             imguiContainer.StretchToParentSize();
-
+            
             var timeProvider = new TimeConverter(timeAreaGUI);
             var playhead = new PlayheadElement(timeProvider);
             playhead.name = "playhead";
@@ -29,6 +31,7 @@ namespace GameDebugger
 
             imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
+            imguiContainer.AddManipulator(new TimeAreaCallbackManipulator(timeAreaGUI, playhead));
 
             var trackContainer = new TrackContainer(timeProvider, scheduler);
             Add(trackContainer);

@@ -6,6 +6,7 @@ namespace GameDebugger
 {
     class PlayheadElement : VisualElement
     {
+        float m_Time;
         ITimeConverter m_TimeConverter;
         
         public PlayheadElement(ITimeConverter timeConverter)
@@ -24,10 +25,23 @@ namespace GameDebugger
 
         public void SetTime(float time)
         {
-            var pixel = m_TimeConverter.TimeToPixel(time);
-            style.positionLeft = pixel - contentRect.width/2.0f;
-            
+            m_Time = time;
+            RefreshPlayheadPosition();
             GameDebuggerRecorder.ReplayTime(time);
+        }
+
+        public void RefreshPlayheadPosition()
+        {
+            var pixel = m_TimeConverter.TimeToPixel(m_Time);
+            if (pixel > parent.style.positionLeft)
+            style.positionLeft = pixel - contentRect.width/2.0f;
+
+            if (pixel < 150) //ugly hack, sorry
+                style.opacity = 0;
+            else
+            {
+                style.opacity = 100;
+            }
         }
 
         public float GetTimeForPixel(float pixel)
