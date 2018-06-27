@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
     public class HeaderElement : VisualElement
-    {
+    {  
         public HeaderElement()
         {
             name = "header";
@@ -22,9 +23,29 @@ namespace GameDebugger
                 name = "recordButton",
                 text = "Record"
             });
+
+            var toggle = new Toggle(OnToggle)
+            {
+                name = "recordOnPlay",
+                text = "Record on play"
+            };
+            toggle.value = ViewState.Get().recordOnPlay;
+            EditorApplication.playModeStateChanged += RecordOnPlay;
+            Add(toggle);
         }
 
-        void OnPlay()
+        static void OnToggle()
+        {
+            ViewState.Get().recordOnPlay = !ViewState.Get().recordOnPlay;
+        }
+
+        static void RecordOnPlay(PlayModeStateChange state)
+        {
+            if (ViewState.Get().recordOnPlay && state == PlayModeStateChange.EnteredPlayMode)
+                OnRecord();
+        }
+
+        static void OnPlay()
         {
             if (GameDebuggerRecorder.isPlaying)
             {
@@ -37,7 +58,7 @@ namespace GameDebugger
                 GameDebuggerRecorder.StartReplay();
         }
 
-        void OnRecord()
+        static void OnRecord()
         {
             if (GameDebuggerRecorder.isRecording)
                 GameDebuggerRecorder.StopRecording();
