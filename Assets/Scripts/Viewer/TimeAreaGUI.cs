@@ -16,6 +16,7 @@ namespace GameDebugger
         MethodInfo m_TimeToPixel;
         MethodInfo m_PixelToTime;
         MethodInfo m_SetShownRange;
+        PropertyInfo m_RangeLock;
 
         public TimeAreaGUI()
         {
@@ -34,6 +35,7 @@ namespace GameDebugger
             m_PixelToTime = timeAreaType.GetMethod("PixelToTime", new[] {typeof(float), typeof(Rect)});
             m_SetShownRange = timeAreaType.GetMethod("SetShownHRange", new[]{typeof(float), typeof(float)});
             m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, (float)1});
+            m_RangeLock = timeAreaType.GetProperty("hRangeLocked");
         }
 
         public float TimeToPixel(float time)
@@ -70,6 +72,20 @@ namespace GameDebugger
             m_BeginView.Invoke(m_TimeArea, null);
             m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 60.0f});
             m_EndView.Invoke(m_TimeArea, null);
+
+            if (GameDebuggerRecorder.IsRecording)
+            {
+                float maxTime = 0.0f;
+                if (GameDebuggerDatabase.NumFrameRecords > 0)
+                    maxTime = GameDebuggerDatabase.GetRecords(GameDebuggerDatabase.NumFrameRecords - 1).time;
+                maxTime = Math.Max(5.0f, maxTime);
+                m_SetShownRange.Invoke(m_TimeArea, new object[] { 0.0f, maxTime });
+                m_RangeLock.SetValue(m_TimeArea, true, null);
+            }
+            else
+            {
+                m_RangeLock.SetValue(m_TimeArea, false, null);
+            }
         }
     }
 }
