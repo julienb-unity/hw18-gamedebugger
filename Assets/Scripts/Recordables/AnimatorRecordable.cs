@@ -1,12 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor.Animations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Recordables
 {
+	[Serializable]
 	public class AnimatorRecordable : Recordable<Animator>
 	{
 		[SerializeField] private List<string> LayerNames = new List<string>();

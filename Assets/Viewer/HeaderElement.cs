@@ -27,6 +27,12 @@ namespace GameDebugger
                 name = "recordButton",
                 text = "Record"
             });
+            
+            Add(new Button(OnLoadSavedRecording)
+            {
+                name = "loadLastRecordingButton",
+                text = "Load last recording"
+            });
 
             var toggle = new Toggle(OnToggle)
             {
@@ -68,10 +74,21 @@ namespace GameDebugger
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
-            if (GameDebuggerRecorder.isRecording)
+            if (GameDebuggerRecorder.IsRecording)
                 GameDebuggerRecorder.StopRecording();
             else
                 GameDebuggerRecorder.StartRecording();
+        }
+        
+        static void OnLoadSavedRecording()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+            bool success = GameDebuggerSerializer.LoadDataFromFile();
+            if (!success)
+            {
+                Debug.LogError("Cant load replay data from file");
+            }
         }
     }
 }

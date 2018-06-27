@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 using UnityEditor;
 
 // Purpose of this class:
 //   - Layer between the scene and the editor window
 //   - Allows the game dev to define what data to record
 //   - Discuss with the database only (never the editor)
+
 [InitializeOnLoad]
 public class GameDebuggerRecorder
 {
-	public static bool isRecording;
-	private static Dictionary<Type, string> typeToFieldNameMapping = new Dictionary<Type, string>();
-
+	public static bool IsRecording;
 	public static int currentFrame ;
 	public static bool isPlaying;
 	public static bool isPaused;
@@ -41,7 +38,7 @@ public class GameDebuggerRecorder
 	{
 		if (!isPlaying)
 		{
-			if (isRecording)
+			if (IsRecording)
 				StopRecording();
 
 			isPaused = false;
@@ -84,7 +81,7 @@ public class GameDebuggerRecorder
 		if (isPlaying)
 			StopReplay();
 		
-		if (isRecording)
+		if (IsRecording)
 			return;
 
 		GameDebuggerDatabase.Clear();
@@ -95,36 +92,30 @@ public class GameDebuggerRecorder
 		m_UpdaterGo.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		m_UpdaterGo.AddComponent<GameDebuggerBehaviour>();
 
-		isRecording = true;
+		IsRecording = true;
 	}
 
 	public static void StopRecording()
 	{
-		if (!isRecording)
+		if (!IsRecording)
 			return;
 
-		isRecording = false;
+		IsRecording = false;
 		
 		// Remove hidden GameObject.
 		UnityEngine.Object.DestroyImmediate(m_UpdaterGo);
 
 		Debug.LogFormat("Recorded {0} frames",GameDebuggerDatabase.NumFrameRecords);
-//		GameDebuggerDatabase.LogStats();
-	}
-
-	public static void AddPropertyToRecord(Type type, string propName)
-	{		
-		typeToFieldNameMapping.Add(type, propName);
+		GameDebuggerSerializer.DumpToFile();
 	}
 
 	public static void Update()
 	{
-		if (!isRecording)
+		if (!IsRecording)
 			return;
 
 		GameDebuggerDatabase.RecordFrame(currentFrame);
 		
 		currentFrame ++;
-		//recorderDataStorage.RecordNewFrame();
 	}
 }

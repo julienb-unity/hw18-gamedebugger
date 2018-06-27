@@ -5,25 +5,29 @@ using GameDebugger;
 using Recordables;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 // Purpose of this class:
 //   - Fetch data from scene
 //   - Provide API for the editor window to retrieve the recorded data
 //   - Provide API for the editor window to send data
-[CreateAssetMenu]
-public class GameDebuggerDatabase : ScriptableObject
+public class GameDebuggerDatabase
 {
-	static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
-	static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
-	static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
 	public static event Action<List<GameObject>> FilteredGameObjects;
+	private static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
+	private static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
+	private static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
 	private static int m_frame;
 	private static bool m_sync;
 
 	public static int NumFrameRecords
 	{
 		get { return m_frameRecords.Count; }
+	}
+	
+	public static List<List<RecordableInfo>> FrameRecords
+	{
+		get { return m_frameRecords; }
+		set { m_frameRecords = value; }
 	}
 
 	public static void Init()
@@ -90,6 +94,7 @@ public class GameDebuggerDatabase : ScriptableObject
 		public int GameObjectInstanceID;
 		public List<RecordableInfo> recordables = new List<RecordableInfo>();
 	}
+	
 	public static List<TrackData> GetTrackDatas()
 	{
 		List<TrackData> result = null;

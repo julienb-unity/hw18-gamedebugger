@@ -1,14 +1,29 @@
-﻿using UnityEngine;
+﻿using System;
+using Object = UnityEngine.Object;
 
 namespace Recordables
 {
-    public abstract class Recordable
+    [Serializable]
+    public class Recordable
     {
-        public abstract bool OnRecord(Recordable previous, Object source);
-        public abstract void OnReplay(Object source);
+        public virtual bool OnRecord(Recordable previous, Object source)
+        {
+            return true;
+        }
+
+        public virtual void OnReplay(Object source)
+        {
+        }
     }
 
-    public abstract class Recordable<T> : Recordable where T : Object
+    [Serializable]
+    public class Recordable<T> : Recordable where T : Object
     {
+        public string TypeName;
+
+        public Recordable()
+        {
+            TypeName = typeof(T).FullName;
+        }
     }
 }

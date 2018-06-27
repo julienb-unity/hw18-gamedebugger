@@ -4,6 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Recordables
 {
+    [Serializable]
     public class TransformRecordable : Recordable<Transform>
     {
         [SerializeField]

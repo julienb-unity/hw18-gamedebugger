@@ -39,3 +39,7 @@ sysinfo.txt
 .idea/
 Assets/Plugins.meta
 Assets/Plugins/
+
+#Custom files
+Assets/dump.json
+Assets/dump.json.meta
