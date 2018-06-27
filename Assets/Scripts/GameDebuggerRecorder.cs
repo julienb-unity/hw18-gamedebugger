@@ -17,13 +17,11 @@ public class GameDebuggerRecorder
 	public static bool isPlaying;
 	public static bool isPaused;
 
+	private static GameObject m_UpdaterGo;
+
 	static GameDebuggerRecorder()
 	{
-		var go = new GameObject("GameDebugger");
-		go.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
-		go.AddComponent<GameDebuggerBehaviour>();
-
-		EditorApplication.update += EditorUpdate; 
+		EditorApplication.update += EditorUpdate;
 
 		GameDebuggerDatabase.Init();
 	}
@@ -94,10 +92,14 @@ public class GameDebuggerRecorder
 		GameDebuggerDatabase.Clear();
 		currentFrame = 0;
 
+		// Create hidden GameObject for the LateUpdate callback.
+		m_UpdaterGo = new GameObject("GameDebugger");
+		m_UpdaterGo.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
+		m_UpdaterGo.AddComponent<GameDebuggerBehaviour>();
 
 		isRecording = true;
 	}
-	
+
 	public static void StopRecording()
 	{
 		if (!isRecording)
@@ -105,6 +107,9 @@ public class GameDebuggerRecorder
 
 		isRecording = false;
 		
+		// Remove hidden GameObject.
+		UnityEngine.Object.DestroyImmediate(m_UpdaterGo);
+
 		Debug.LogFormat("Recorded {0} frames",GameDebuggerDatabase.NumFrameRecords);
 //		GameDebuggerDatabase.LogStats();
 	}
