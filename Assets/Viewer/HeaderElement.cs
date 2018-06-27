@@ -51,6 +51,8 @@ namespace GameDebugger
 
         static void OnPlay()
         {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
             if (GameDebuggerRecorder.isPlaying)
             {
                 if (GameDebuggerRecorder.isPaused)
@@ -64,6 +66,8 @@ namespace GameDebugger
 
         static void OnRecord()
         {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
             if (GameDebuggerRecorder.isRecording)
                 GameDebuggerRecorder.StopRecording();
             else
