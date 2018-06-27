@@ -17,6 +17,7 @@ public class GameDebuggerDatabase : ScriptableObject
 	static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
 	static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
 	static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
+	public static event Action<List<GameObject>> FilteredGameObjects;
 	private static int m_frame;
 	private static bool m_sync;
 
@@ -45,7 +46,23 @@ public class GameDebuggerDatabase : ScriptableObject
 			m_TypeToRecordable[t].Add(recordable);				
 			Debug.Log(recordable); 
 		}
+		
+		
+		FilteredGameObjects+=OnFilteredGameObjects;
 
+	}
+
+	private static void OnFilteredGameObjects(List<GameObject> obj)
+	{
+		for (int i = 0; i < SceneManager.sceneCount; i++)
+		{
+			var scene = SceneManager.GetSceneAt(i);
+			foreach (var rootGameObject in scene.GetRootGameObjects())
+			{
+				if (PrefabUtility.GetPrefabType(rootGameObject) == PrefabType.PrefabInstance)
+					obj.Add(rootGameObject);
+			}
+		}
 	}
 
 	public static void Clear()
@@ -61,15 +78,27 @@ public class GameDebuggerDatabase : ScriptableObject
 			m_sync = true;
 		else
 			m_sync = false;
+		
 		m_frameRecords.Add(new List<RecordableInfo>());
-		for (int i = 0; i < SceneManager.sceneCount; i++)
+		List<GameObject> objects = new List<GameObject>(); 
+		if (FilteredGameObjects != null)
 		{
-			var scene = SceneManager.GetSceneAt(i);
-			foreach (var rootGameObject in scene.GetRootGameObjects())
+			FilteredGameObjects(objects);
+			var list = objects.Distinct().ToList();
+
+			foreach (var gameObject in list)
 			{
-				RecordGameObject(rootGameObject);
+				RecordGameObject(gameObject);
 			}
 		}
+//		for (int i = 0; i < SceneManager.sceneCount; i++)
+//		{
+//			var scene = SceneManager.GetSceneAt(i);
+//			foreach (var rootGameObject in scene.GetRootGameObjects())
+//			{
+//				RecordGameObject(rootGameObject);
+//			}
+//		}
 	}
 
 
