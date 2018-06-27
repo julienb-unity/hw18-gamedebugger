@@ -49,10 +49,16 @@ namespace GameDebugger
             for (int i = 0; i < count; i++)
             {
                 var leftTime = converter.TimeToPixel(m_LayerNames[i].time);
-                var rightTime = i+1 == count ? track.contentRect.xMax + 10 : converter.TimeToPixel(m_LayerNames[i + 1].time);
+
+                var nextTime = i + 1 == count
+                    ? Time.unscaledTime - GameDebuggerDatabase.StartRecordingTime
+                    : m_LayerNames[i + 1].time;
+
+                var rightTime = converter.TimeToPixel(nextTime);
                 var rect = track.contentRect;
                 rect.xMin = leftTime;
                 rect.xMax = rightTime;
+                rect.yMax -= 5;
                 GUI.Box(rect, m_LayerNames[i].name, EditorStyles.helpBox);
             }
         }
