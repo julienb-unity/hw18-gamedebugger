@@ -15,30 +15,6 @@ namespace GameDebugger
             name = "header";
             AddToClassList("container");
             
-            Add(new Button(OnPlay)
-            {
-                name = "playButton",
-                text = "Play"
-            });
-            
-            Add(new Button(OnRecord)
-            {
-                name = "recordButton",
-                text = "Record"
-            });
-            
-            Add(new Button(OnLoadSavedRecording)
-            {
-                name = "loadLastRecordingButton",
-                text = "Load last recording"
-            });
-            
-            Add(new Button(OnSaveRecording)
-            {
-                name = "saveRecordingButton",
-                text = "Save recording"
-            });
-
             var toggle = new Toggle(OnToggle)
             {
                 name = "recordOnPlay",
@@ -47,6 +23,30 @@ namespace GameDebugger
             toggle.value = state.recordOnPlay;
             EditorApplication.playModeStateChanged += RecordOnPlay;
             Add(toggle);
+
+            Add(new Button(OnRecord)
+            {
+                name = "recordButton",
+                text = "Record"
+            });
+
+            Add(new Button(OnPlay)
+            {
+                name = "playButton",
+                text = "Play"
+            });
+
+            Add(new Button(OnSaveRecording)
+            {
+                name = "saveRecordingButton",
+                text = "Save recording"
+            });
+
+            Add(new Button(OnLoadSavedRecording)
+            {
+                name = "loadLastRecordingButton",
+                text = "Load last recording"
+            });
         }
 
         void OnToggle()

@@ -8,11 +8,11 @@ namespace Recordables
     public class TransformRecordable : Recordable<Transform>
     {
         [SerializeField]
-        private Vector3 localPosition;
+        public Vector3 localPosition;
         [SerializeField]
-        private Quaternion localRotation;
+        public Quaternion localRotation;
         [SerializeField]
-        private Vector3 localScale;
+        public Vector3 localScale;
 
         public override bool OnRecord(Recordable previous, Object source)
         {
