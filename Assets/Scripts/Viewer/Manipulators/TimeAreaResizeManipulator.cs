@@ -20,7 +20,6 @@ namespace GameDebugger
 
         void OnGeometryChanged(GeometryChangedEvent evt)
         {
-            Debug.Log("GeometryChnaged");
             m_Playhead.RefreshPlayheadPosition();
         }
 
