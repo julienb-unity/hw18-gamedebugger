@@ -23,6 +23,7 @@ public class GameDebuggerDatabase
 	private static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
 	private static List<FrameInfo> m_frameRecords = new List<FrameInfo>();
 	private static int m_frame;
+	private static float m_StartRecordingTime;
 	private static bool m_sync;
 
 	public static int NumFrameRecords
@@ -66,13 +67,17 @@ public class GameDebuggerDatabase
 
 	public static void RecordFrame(int frame)
 	{
+		// First recording frame, save starting time.
+		if (frame == 0)
+			m_StartRecordingTime = Time.unscaledTime;
+
 		m_frame = frame;
 		if (m_frame % 60 == 0)
 			m_sync = true;
 		else
 			m_sync = false;
 		
-		m_frameRecords.Add(new FrameInfo() { time = Time.unscaledTime });
+		m_frameRecords.Add(new FrameInfo() { time = Time.unscaledTime - m_StartRecordingTime });
 		List<GameObject> objects = new List<GameObject>(); 
 		if (FilteredGameObjects != null)
 		{

@@ -71,10 +71,13 @@ namespace GameDebugger
             m_LastRect = rect;
             m_TimeAreaRect.SetValue(m_TimeArea, rect, null);
             m_BeginView.Invoke(m_TimeArea, null);
-            m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 1.0f});
+            m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 60.0f});
             m_EndView.Invoke(m_TimeArea, null);
-            var maxTime = GameDebuggerDatabase.NumFrameRecords < 100 ? 100 : GameDebuggerDatabase.NumFrameRecords;
-            m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, (float)maxTime});
+            float maxTime = 0.0f;
+            if (GameDebuggerDatabase.NumFrameRecords > 0)
+                maxTime = GameDebuggerDatabase.GetRecords(GameDebuggerDatabase.NumFrameRecords - 1).time;
+            maxTime = Math.Max(5.0f, maxTime);
+            m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, maxTime});
         }
     }
 }

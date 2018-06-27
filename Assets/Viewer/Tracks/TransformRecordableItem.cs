@@ -10,14 +10,14 @@ namespace GameDebugger
     class TransformRecordableItem : ITrackItem
     {
         int m_InstanceId;
-        List<int> m_Keys;
+        List<int> m_FrameIds;
 
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
         
         public TransformRecordableItem(int instanceId, int frame)
         {
-            m_Keys = new List<int>(200){frame};
+            m_FrameIds = new List<int>(200){frame};
             m_InstanceId = instanceId;
         }
 
@@ -35,25 +35,27 @@ namespace GameDebugger
             var tr = recordableInfo.recordable as TransformRecordable;
             if (tr != null)
             {
-                var lastRecords = GameDebuggerDatabase.GetRecords(m_Keys.Last());
+                var lastRecords = GameDebuggerDatabase.GetRecords(m_FrameIds.Last());
                 var info = lastRecords.records.Find(otherRecInfo => m_InstanceId == otherRecInfo.instanceID);
-                if (!tr.ApproximatelyEquals((TransformRecordable)info.recordable))
-                    m_Keys.Add(frame);
+                if (!tr.ApproximatelyEquals((TransformRecordable) info.recordable))
+                    m_FrameIds.Add(frame);
             }
         }
 
         void DrawKeys(ITimeConverter converter)
         {
-            foreach (var key in m_Keys)
+            foreach (var frameId in m_FrameIds)
             {
-                var keyPixelXPos = converter.TimeToPixel(key);
+                var frameTime = GameDebuggerDatabase.GetRecords(frameId).time;
+                var keyPixelXPos = converter.TimeToPixel(frameTime);
                 EditorGUI.DrawRect(new Rect(keyPixelXPos - 3, 22, 6, 6), m_KeyColor);
             }
         }
 
         void DrawLine(Track track, ITimeConverter converter)
         {
-            var x = converter.TimeToPixel(m_Keys.First());
+            var frameTime = GameDebuggerDatabase.GetRecords(m_FrameIds.First()).time;
+            var x = converter.TimeToPixel(frameTime);
             var w = track.contentRect.width;
             EditorGUI.DrawRect(new Rect(x, 24, w, 1), m_LineColor);
         }
