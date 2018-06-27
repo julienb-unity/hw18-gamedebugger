@@ -152,7 +152,9 @@ public class GameDebuggerDatabase
 	
 				if (recordable.OnRecord(previous, o))
 				{
-					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(), recordable));
+					var component = o as Component;
+					var gameObject = component == null ? null : component.gameObject;
+					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(),UnityEditor.Unsupported.GetLocalIdentifierInFile(o.GetInstanceID()), recordable));
 					m_sessionRecords[o.GetInstanceID()] = recordable;
 				}
 			}

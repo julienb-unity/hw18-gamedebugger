@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using GameDebugger;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 
 public class GameDebuggerSerializer 
@@ -14,7 +15,8 @@ public class GameDebuggerSerializer
 		public List<string> FrameInfos;
 	}
 
-	private static string filePath = "Assets/dump.json";
+	private static string filePath = "dump.json";
+	public static Dictionary<int, int> localFileIDToInstanceID;
 
 	public static void DumpToFile()
 	{
@@ -39,6 +41,25 @@ public class GameDebuggerSerializer
 	public static bool LoadDataFromFile()
 	{
 		if (!File.Exists(filePath)) return false;
+
+		List<Component> components = new List<Component>();
+		for (int i = 0; i < SceneManager.sceneCount; i++)
+		{
+			var scene = SceneManager.GetSceneAt(i);
+			foreach (var rootGameObject in scene.GetRootGameObjects())
+			{
+				components.AddRange(rootGameObject.GetComponents<Component>());
+			}
+		}
+		
+		localFileIDToInstanceID = new Dictionary<int, int>(components.Count);
+		foreach (var component in components) 
+		{
+			var id = UnityEditor.Unsupported.GetLocalIdentifierInFile(component.GetInstanceID());
+			if (id != 0)
+				localFileIDToInstanceID.Add(id,component.GetInstanceID());
+		}
+		
 		var rec = JsonUtility.FromJson<Recording>(File.ReadAllText(filePath));
 		List<FrameInfo> frameRecords = new List<FrameInfo>();
 		
