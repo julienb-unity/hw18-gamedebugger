@@ -7,7 +7,7 @@ namespace GameDebugger
         public TimelineElement(RefreshScheduler scheduler)
         {
             name = "timeline";
-            AddStyleSheetPath("Stylesheets/Styles");
+            AddStyleSheetPath("Replay/Stylesheets/Styles");
 
             var timeArea = new VisualElement();
             timeArea.name = "timeArea";

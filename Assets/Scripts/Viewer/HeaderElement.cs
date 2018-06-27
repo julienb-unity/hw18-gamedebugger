@@ -14,7 +14,7 @@ namespace GameDebugger
             
             name = "header";
             AddToClassList("container");
-            AddStyleSheetPath("Stylesheets/Styles");
+            AddStyleSheetPath("Replay/Stylesheets/Styles");
             
             Add(new Button(OnPlay)
             {

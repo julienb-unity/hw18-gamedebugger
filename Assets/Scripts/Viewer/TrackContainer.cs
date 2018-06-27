@@ -20,7 +20,7 @@ namespace GameDebugger
         {
             m_TimeConverter = timeConverter;
             
-            var trackTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackTemplate");
+            var trackTemplate = Resources.Load<VisualTreeAsset>("Replay/GameDebuggerTrackTemplate");
             
             m_ListView = new ListView(new List<int>(), 50, () => new Track(trackTemplate, m_TimeConverter), DrawItem);
             m_ListView.selectionType = SelectionType.None;
