@@ -16,10 +16,10 @@ namespace GameDebugger
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
 
-        public TransformRecordableItem(int instanceId, int frame)
+        public TransformRecordableItem(RecordableInfo recordableInfo, int frame)
         {
             m_FrameIds = new List<int>(200){frame};
-            m_InstanceId = instanceId;
+            m_InstanceId = recordableInfo.instanceID;
         }
 
         public void Draw(Track track, ITimeConverter converter)

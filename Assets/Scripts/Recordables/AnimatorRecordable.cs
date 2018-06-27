@@ -13,7 +13,12 @@ namespace Recordables
 	public class AnimatorRecordable : Recordable<Animator>
 	{
 		[SerializeField] private List<string> LayerNames = new List<string>();
-		
+
+		public IEnumerable<string> layerNames
+		{
+			get { return LayerNames; }
+		}
+
 		private MethodInfo mi;
 		public AnimatorRecordable()
 		{
