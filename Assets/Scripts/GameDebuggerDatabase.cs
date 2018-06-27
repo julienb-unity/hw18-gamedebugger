@@ -14,6 +14,7 @@ public class GameDebuggerDatabase
 {
 	public class FrameInfo
 	{
+		public float time;
 		public List<RecordableInfo> records = new List<RecordableInfo>(100);
 	}
 
@@ -71,7 +72,7 @@ public class GameDebuggerDatabase
 		else
 			m_sync = false;
 		
-		m_frameRecords.Add(new FrameInfo());
+		m_frameRecords.Add(new FrameInfo() { time = Time.unscaledTime });
 		List<GameObject> objects = new List<GameObject>(); 
 		if (FilteredGameObjects != null)
 		{
