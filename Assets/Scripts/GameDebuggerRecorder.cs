@@ -87,8 +87,6 @@ public class GameDebuggerRecorder
 		if (isRecording)
 			return;
 
-		EditorApplication.isPaused = false;
-		
 		GameDebuggerDatabase.Clear();
 		currentFrame = 0;
 
