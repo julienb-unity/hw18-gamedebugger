@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Recordables;
 using UnityEditor;
@@ -46,6 +47,7 @@ namespace GameDebugger
             DrawBackground(track);
             float lastTime = 0;
             var count = m_LayerNames.Count;
+            var oldColor = GUI.backgroundColor;
             for (int i = 0; i < count; i++)
             {
                 var leftTime = converter.TimeToPixel(m_LayerNames[i].time);
@@ -59,8 +61,11 @@ namespace GameDebugger
                 rect.xMin = leftTime;
                 rect.xMax = rightTime;
                 rect.yMax -= 5;
+                GUI.backgroundColor = StringToColor(m_LayerNames[i].name);
                 GUI.Box(rect, m_LayerNames[i].name, EditorStyles.helpBox);
             }
+
+            GUI.backgroundColor = oldColor;
         }
         
         void DrawBackground(Track track)
@@ -86,6 +91,13 @@ namespace GameDebugger
                         time = GameDebuggerDatabase.GetRecords(frame).time
                     });
             }
+        }
+
+        static Color StringToColor(string str)
+        {
+            var hash = str.GetHashCode();
+            var color =  new Color(((hash & 0xFF0000) >> 16)/255.0f, ((hash & 0x00FF00) >> 8)/255.0f, (hash & 0x0000FF)/255.0f);
+            return color;
         }
     }
 }
