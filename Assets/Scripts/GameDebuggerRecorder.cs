@@ -96,6 +96,9 @@ public class GameDebuggerRecorder
 		m_UpdaterGo.hideFlags |= HideFlags.DontSave | HideFlags.HideInHierarchy;
 		m_UpdaterGo.AddComponent<GameDebuggerBehaviour>();
 
+
+		EditorApplication.isPaused = false;
+		
 		IsRecording = true;
 	}
 
