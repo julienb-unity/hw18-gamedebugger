@@ -12,9 +12,10 @@ namespace GameDebugger
         int m_InstanceId;
         List<int> m_FrameIds;
 
+        readonly Color m_BackgroundColor = Color.Lerp(Color.black, Color.white, 0.7f);
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
-        
+
         public TransformRecordableItem(int instanceId, int frame)
         {
             m_FrameIds = new List<int>(200){frame};
@@ -26,6 +27,7 @@ namespace GameDebugger
             var o = EditorUtility.InstanceIDToObject(m_InstanceId);
             track.Q<Label>().text = o.name;
             
+            DrawBackground(track);
             DrawLine(track, converter);
             DrawKeys(converter);
         }
@@ -40,6 +42,15 @@ namespace GameDebugger
                 if (!tr.ApproximatelyEquals((TransformRecordable) info.recordable))
                     m_FrameIds.Add(frame);
             }
+        }
+
+        void DrawBackground(Track track)
+        {
+            var keycontainerRect = track.contentRect;
+            keycontainerRect.x += 145;
+            keycontainerRect.width -= 145;
+            keycontainerRect.height -= 5;
+            EditorGUI.DrawRect(keycontainerRect, m_BackgroundColor);
         }
 
         void DrawKeys(ITimeConverter converter)
