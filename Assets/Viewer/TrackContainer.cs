@@ -59,11 +59,12 @@ namespace GameDebugger
             if (EditorApplication.isPaused)
                 return;
 
-            if (GameDebuggerDatabase.NumFrameRecords == numFrames)
+            var newNumFrames = GameDebuggerDatabase.NumFrameRecords;
+            if (newNumFrames == numFrames)
                 return;
 
             // Get the new instance ID and the new keys.
-            for (var f = numFrames; f < GameDebuggerDatabase.NumFrameRecords; ++f)
+            for (var f = numFrames; f < newNumFrames; ++f)
             {
                 var records = GameDebuggerDatabase.GetRecords(f);
                 foreach (var recordInfo in records.records)
@@ -79,7 +80,7 @@ namespace GameDebugger
                 }
             }
             
-            numFrames = GameDebuggerDatabase.NumFrameRecords;
+            numFrames = newNumFrames;
 
             m_ListView.itemsSource = m_TrackItemByInstance.Keys.ToList();
             m_ListView.Refresh();
