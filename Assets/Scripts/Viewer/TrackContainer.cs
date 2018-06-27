@@ -42,18 +42,6 @@ namespace GameDebugger
             track.item = m_TrackItemByInstance[instanceId];
         }
 
-        void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)
-        {
-            var clip = new Box();
-            var startPixelPos = m_TimeConverter.TimeToPixel(time);
-            clip.style.positionLeft = startPixelPos;
-            clip.AddToClassList("clip");
-            clip.Add(new Label(label));
-            var widthInPixels = m_TimeConverter.TimeToPixel(end) - startPixelPos;
-            clip.style.width = widthInPixels;
-            trackContainer.Add(clip);
-        }
-
         void RefreshTracks()
         {
             if (EditorApplication.isPaused)
