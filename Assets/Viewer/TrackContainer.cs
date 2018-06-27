@@ -41,11 +41,11 @@ namespace GameDebugger
             private readonly ITimeConverter m_TimeConverter;
             private readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
 
-            public Track(VisualTreeAsset itemTemplate, ITimeConverter timeConverter)
+            public Track(VisualTreeAsset trackTemplate, ITimeConverter timeConverter)
             {
                 m_TimeConverter = timeConverter;
 
-                itemTemplate.CloneTree(this, null);
+                trackTemplate.CloneTree(this, null);
 
                 KeyContainer = new KeyContainer(m_TimeConverter);
                 this.Q(className: "track").Add(KeyContainer);
@@ -69,9 +69,9 @@ namespace GameDebugger
         {
             m_TimeConverter = timeConverter;
             
-            var itemTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackItem");
+            var trackTemplate = Resources.Load<VisualTreeAsset>("GameDebuggerTrackTemplate");
             
-            m_ListView = new ListView(new List<int>(), 50, () => new Track(itemTemplate, m_TimeConverter), DrawItem);
+            m_ListView = new ListView(new List<int>(), 50, () => new Track(trackTemplate, m_TimeConverter), DrawItem);
             m_ListView.selectionType = SelectionType.None;
             Add(m_ListView);
             
