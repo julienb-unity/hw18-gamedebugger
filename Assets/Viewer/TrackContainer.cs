@@ -73,7 +73,8 @@ namespace GameDebugger
                     else
                     {
                         var item = m_TrackItemByInstance[recordInfo.instanceID];
-                        item.Refresh(recordInfo, f);
+                        if (item != null)
+                            item.Refresh(recordInfo, f);
                     }
                 }
             }
