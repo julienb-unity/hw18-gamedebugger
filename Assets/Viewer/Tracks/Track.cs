@@ -8,7 +8,7 @@ namespace GameDebugger
     {
         readonly ITimeConverter m_TimeConverter;
 
-        public TrackItem item { get; set; }
+        public ITrackItem item { get; set; }
         
         public Track(VisualTreeAsset trackTemplate, ITimeConverter timeConverter)
         {
