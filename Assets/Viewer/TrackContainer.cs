@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Recordables;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
@@ -12,58 +12,9 @@ namespace GameDebugger
         ListView m_ListView;
         ITimeConverter m_TimeConverter;
 
-        class KeyContainer : VisualElement
-        {
-            public List<int> keys;
-
-            private readonly ITimeConverter m_TimeConverter;
-            private readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
-
-            public KeyContainer(ITimeConverter timeConverter)
-            {
-                m_TimeConverter = timeConverter;
-            }
-
-            public override void DoRepaint()
-            {
-                foreach (var key in keys)
-                {
-                    var x = m_TimeConverter.TimeToPixel(key);
-                    EditorGUI.DrawRect(new Rect(x - 3, 22, 6, 6), m_KeyColor);
-                }
-            }
-        }
-
-        class Track : VisualElement
-        {
-            public KeyContainer KeyContainer;
-
-            private readonly ITimeConverter m_TimeConverter;
-            private readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
-
-            public Track(VisualTreeAsset trackTemplate, ITimeConverter timeConverter)
-            {
-                m_TimeConverter = timeConverter;
-
-                trackTemplate.CloneTree(this, null);
-
-                KeyContainer = new KeyContainer(m_TimeConverter);
-                this.Q(className: "track").Add(KeyContainer);
-            }
-
-            public override void DoRepaint()
-            {
-                if (KeyContainer.keys.Count == 0)
-                    return;
-                var x = m_TimeConverter.TimeToPixel(KeyContainer.keys.First());
-                var w = contentRect.width;
-                EditorGUI.DrawRect(new Rect(x, 24, w, 1), m_LineColor);
-            }
-        }
-
         // Keys by Instance ID.
-        private Dictionary<int, List<int>> m_InstanceIdKeyMap = new Dictionary<int, List<int>>(300);
-        private int numFrames;
+        Dictionary<int, TrackItem> m_TrackItemByInstance = new Dictionary<int, TrackItem>();
+        int numFrames;
 
         public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
         {
@@ -83,14 +34,12 @@ namespace GameDebugger
             scheduler.Refresh += RefreshTracks;
         }
 
-        private void DrawItem(VisualElement elt, int index)
+        void DrawItem(VisualElement elt, int index)
         {
             var instanceIdList = (List<int>)m_ListView.itemsSource;
             var instanceId = instanceIdList[index];
-            UnityEngine.Object o = EditorUtility.InstanceIDToObject(instanceId);
-            elt.Q<Label>().text = o.name;
-            Track trackItem = (Track) elt;
-            trackItem.KeyContainer.keys = m_InstanceIdKeyMap[instanceId];
+            var track = (Track) elt;
+            m_TrackItemByInstance[instanceId].DrawOnTrack(track);
         }
 
         void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)
@@ -105,7 +54,7 @@ namespace GameDebugger
             trackContainer.Add(clip);
         }
 
-        private void RefreshTracks()
+        void RefreshTracks()
         {
             if (EditorApplication.isPaused)
                 return;
@@ -119,29 +68,19 @@ namespace GameDebugger
                 var records = GameDebuggerDatabase.GetRecords(f);
                 foreach (var recordInfo in records)
                 {
-                    if (!m_InstanceIdKeyMap.ContainsKey(recordInfo.instanceID))
-                    {
-                        var keys = new List<int>(200) { f };
-                        m_InstanceIdKeyMap[recordInfo.instanceID] = keys;
-                    }
+                    if (!m_TrackItemByInstance.ContainsKey(recordInfo.instanceID))
+                        m_TrackItemByInstance[recordInfo.instanceID] = new TrackItem(recordInfo, f);
                     else
                     {
-                        var keys = m_InstanceIdKeyMap[recordInfo.instanceID];
-                        var tr = recordInfo.recordable as TransformRecordable;
-                        if (tr != null)
-                        {
-                            var lastRecords = GameDebuggerDatabase.GetRecords(keys.Last());
-                            var info = lastRecords.Find(recordableInfo => recordableInfo.instanceID == recordInfo.instanceID);
-                            if (!tr.ApproximatelyEquals((TransformRecordable)info.recordable))
-                                keys.Add(f);
-                        }
+                        var item = m_TrackItemByInstance[recordInfo.instanceID];
+                        item.Refresh(f);
                     }
                 }
             }
 
             numFrames = GameDebuggerDatabase.NumFrameRecords;
 
-            m_ListView.itemsSource = m_InstanceIdKeyMap.Keys.ToList();
+            m_ListView.itemsSource = m_TrackItemByInstance.Keys.ToList();
             m_ListView.Refresh();
         }
     }
