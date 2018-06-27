@@ -154,7 +154,7 @@ public class GameDebuggerDatabase
 				{
 					var component = o as Component;
 					var gameObject = component == null ? null : component.gameObject;
-					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(),UnityEditor.Unsupported.GetLocalIdentifierInFile(o.GetInstanceID()), recordable));
+					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(),GameDebuggerSerializer.GetID(o), recordable));
 					m_sessionRecords[o.GetInstanceID()] = recordable;
 				}
 			}

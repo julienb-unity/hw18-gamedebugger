@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using GameDebugger;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
+using Object = System.Object;
 
 public class GameDebuggerSerializer 
 {
@@ -15,7 +18,7 @@ public class GameDebuggerSerializer
 		public List<string> FrameInfos;
 	}
 
-	private static string filePath = "dump.json";
+	private static string filePath = "Assets/dump.json";
 	public static Dictionary<int, int> localFileIDToInstanceID;
 
 	public static void DumpToFile()
@@ -37,7 +40,17 @@ public class GameDebuggerSerializer
 
 		Debug.Log(string.Format("Serialization time {0}s, Size:{1}", s.Elapsed.Seconds, BytesPretyPrint.ToPrettySize(length, 1)));
 	}
-	
+
+	public static int GetID(UnityEngine.Object obj)
+	{
+		PropertyInfo inspectorModeInfo =
+			typeof(SerializedObject).GetProperty("inspectorMode", BindingFlags.NonPublic | BindingFlags.Instance);
+		SerializedObject serializedObject = new SerializedObject(obj);
+		inspectorModeInfo.SetValue(serializedObject, InspectorMode.Debug, null);
+		SerializedProperty localIdProp =
+			serializedObject.FindProperty("m_LocalIdentfierInFile");   //note the misspelling!
+		return localIdProp.intValue;
+	}
 	public static bool LoadDataFromFile()
 	{
 		if (!File.Exists(filePath)) return false;
@@ -55,7 +68,7 @@ public class GameDebuggerSerializer
 		localFileIDToInstanceID = new Dictionary<int, int>(components.Count);
 		foreach (var component in components) 
 		{
-			var id = UnityEditor.Unsupported.GetLocalIdentifierInFile(component.GetInstanceID());
+			var id = GetID(component);
 			if (id != 0)
 				localFileIDToInstanceID.Add(id,component.GetInstanceID());
 		}

@@ -36,7 +36,7 @@ namespace GameDebugger
 		public string ToJson()
 		{
 			sb.Length = 0;
-			sb.Append(instanceID);
+			sb.Append(localIdentifierInFile);
 			sb.Append("&");
 			sb.Append(recordable.GetType().FullName);
 			sb.Append("&");

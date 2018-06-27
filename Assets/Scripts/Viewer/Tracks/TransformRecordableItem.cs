@@ -25,6 +25,7 @@ namespace GameDebugger
         public void Draw(Track track, ITimeConverter converter)
         {
             var o = EditorUtility.InstanceIDToObject(m_InstanceId);
+            if (o == null) return;
             track.Q<Label>().text = o.name;
             
             DrawBackground(track);
