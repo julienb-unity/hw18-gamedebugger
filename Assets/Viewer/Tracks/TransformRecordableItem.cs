@@ -36,7 +36,7 @@ namespace GameDebugger
             if (tr != null)
             {
                 var lastRecords = GameDebuggerDatabase.GetRecords(m_Keys.Last());
-                var info = lastRecords.Find(otherRecInfo => m_InstanceId == otherRecInfo.instanceID);
+                var info = lastRecords.records.Find(otherRecInfo => m_InstanceId == otherRecInfo.instanceID);
                 if (!tr.ApproximatelyEquals((TransformRecordable)info.recordable))
                     m_Keys.Add(frame);
             }

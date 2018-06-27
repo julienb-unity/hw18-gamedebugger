@@ -12,10 +12,15 @@ using UnityEngine;
 //   - Provide API for the editor window to send data
 public class GameDebuggerDatabase
 {
+	public class FrameInfo
+	{
+		public List<RecordableInfo> records = new List<RecordableInfo>(100);
+	}
+
 	public static event Action<List<GameObject>> FilteredGameObjects;
 	private static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
 	private static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
-	private static List<List<RecordableInfo>> m_frameRecords = new List<List<RecordableInfo>>();
+	private static List<FrameInfo> m_frameRecords = new List<FrameInfo>();
 	private static int m_frame;
 	private static bool m_sync;
 
@@ -24,7 +29,7 @@ public class GameDebuggerDatabase
 		get { return m_frameRecords.Count; }
 	}
 	
-	public static List<List<RecordableInfo>> FrameRecords
+	public static List<FrameInfo> FrameRecords
 	{
 		get { return m_frameRecords; }
 		set { m_frameRecords = value; }
@@ -66,7 +71,7 @@ public class GameDebuggerDatabase
 		else
 			m_sync = false;
 		
-		m_frameRecords.Add(new List<RecordableInfo>());
+		m_frameRecords.Add(new FrameInfo());
 		List<GameObject> objects = new List<GameObject>(); 
 		if (FilteredGameObjects != null)
 		{
@@ -101,7 +106,7 @@ public class GameDebuggerDatabase
 
 		foreach (var frameRecord in m_frameRecords)
 		{
-			foreach (var recordableInfo in frameRecord)
+			foreach (var recordableInfo in frameRecord.records)
 			{
 				result = new List<TrackData>();
 				var go = EditorUtility.InstanceIDToObject(recordableInfo.instanceID) as GameObject;
@@ -146,7 +151,7 @@ public class GameDebuggerDatabase
 	
 				if (recordable.OnRecord(previous,o))
 				{
-					m_frameRecords[m_frame].Add(new RecordableInfo(o.GetInstanceID(), recordable));
+					m_frameRecords[m_frame].records.Add(new RecordableInfo(o.GetInstanceID(), recordable));
 					m_sessionRecords[o.GetInstanceID()] = recordable;
 				}
 			}
@@ -167,7 +172,7 @@ public class GameDebuggerDatabase
 		}
 	}
 
-	public static List<RecordableInfo> GetRecords(int frame)
+	public static FrameInfo GetRecords(int frame)
 	{
 		return m_frameRecords[frame];
 	}
@@ -177,7 +182,7 @@ public class GameDebuggerDatabase
 		int lastSync = frame - frame % 60;
 		for (int i = lastSync; i < NumFrameRecords && i <= frame; ++i)
 		{
-			foreach (var recordableInfo in m_frameRecords[i])
+			foreach (var recordableInfo in m_frameRecords[i].records)
 			{
 				var obj = EditorUtility.InstanceIDToObject(recordableInfo.instanceID);
 				if (obj != null)
@@ -216,9 +221,9 @@ public class GameDebuggerDatabase
 		while (f >= 0)
 		{
 			RecordableInfo rec = null;
-			for (int i = 0; i < m_frameRecords[f].Count; ++i)
+			for (int i = 0; i < m_frameRecords[f].records.Count; ++i)
 			{
-				var record = m_frameRecords[f][i];
+				var record = m_frameRecords[f].records[i];
 				if (record.instanceID == instanceID)
 				{
 					rec = record;

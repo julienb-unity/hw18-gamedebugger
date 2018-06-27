@@ -38,7 +38,7 @@ public class GameDebuggerSerializer
 		foreach (var frameData in GameDebuggerDatabase.FrameRecords)
 		{
 			var list = new List<string>();
-			foreach (var recordableInfo in frameData)
+			foreach (var recordableInfo in frameData.records)
 			{
 				list.Add(recordableInfo.ToJson());
 			}
@@ -58,14 +58,14 @@ public class GameDebuggerSerializer
 	{
 		if (!File.Exists(filePath)) return false;
 		var rec = JsonUtility.FromJson<Recording>(File.ReadAllText(filePath));
-		List<List<RecordableInfo>> frameRecords = new List<List<RecordableInfo>>();
+		List<GameDebuggerDatabase.FrameInfo> frameRecords = new List<GameDebuggerDatabase.FrameInfo>();
 		
 		foreach (var frameData in rec.FrameInfos)
 		{
-			var list = new List<RecordableInfo>();
+			var list = new GameDebuggerDatabase.FrameInfo();
 			foreach (var recordableInfoJson in frameData.RecordableInfoJsons)
 			{
-				list.Add(RecordableInfo.FromJson(recordableInfoJson));
+				list.records.Add(RecordableInfo.FromJson(recordableInfoJson));
 			}
 			frameRecords.Add(list);
 		}

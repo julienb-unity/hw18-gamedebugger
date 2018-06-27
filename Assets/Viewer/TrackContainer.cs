@@ -66,7 +66,7 @@ namespace GameDebugger
             for (var f = numFrames; f < GameDebuggerDatabase.NumFrameRecords; ++f)
             {
                 var records = GameDebuggerDatabase.GetRecords(f);
-                foreach (var recordInfo in records)
+                foreach (var recordInfo in records.records)
                 {
                     if (!m_TrackItemByInstance.ContainsKey(recordInfo.instanceID))
                         m_TrackItemByInstance[recordInfo.instanceID] = TrackItemFactory.Create(recordInfo, f);
