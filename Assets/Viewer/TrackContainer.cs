@@ -13,7 +13,7 @@ namespace GameDebugger
         ITimeConverter m_TimeConverter;
 
         // Keys by Instance ID.
-        Dictionary<int, TrackItem> m_TrackItemByInstance = new Dictionary<int, TrackItem>();
+        Dictionary<int, ITrackItem> m_TrackItemByInstance = new Dictionary<int, ITrackItem>();
         int numFrames;
 
         public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler)
@@ -69,7 +69,7 @@ namespace GameDebugger
                 foreach (var recordInfo in records)
                 {
                     if (!m_TrackItemByInstance.ContainsKey(recordInfo.instanceID))
-                        m_TrackItemByInstance[recordInfo.instanceID] = new TrackItem(recordInfo.instanceID, f);
+                        m_TrackItemByInstance[recordInfo.instanceID] = TrackItemFactory.Create(recordInfo, f);
                     else
                     {
                         var item = m_TrackItemByInstance[recordInfo.instanceID];

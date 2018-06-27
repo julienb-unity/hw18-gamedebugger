@@ -7,7 +7,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class TrackItem
+    class TransformRecordableItem : ITrackItem
     {
         int m_InstanceId;
         List<int> m_Keys;
@@ -15,7 +15,7 @@ namespace GameDebugger
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
         
-        public TrackItem(int instanceId, int frame)
+        public TransformRecordableItem(int instanceId, int frame)
         {
             m_Keys = new List<int>(200){frame};
             m_InstanceId = instanceId;
