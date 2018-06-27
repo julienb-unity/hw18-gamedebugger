@@ -32,6 +32,7 @@ namespace GameDebugger
             imguiContainer.AddManipulator(new PlayheadDragManipulator(playhead));
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
             imguiContainer.AddManipulator(new TimeAreaCallbackManipulator(timeAreaGUI, playhead));
+            imguiContainer.AddManipulator(new TimeAreaResizeManipulator(playhead));
 
             var trackContainer = new TrackContainer(timeProvider, scheduler, extraViewer);
             Add(trackContainer);
