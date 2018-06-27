@@ -83,7 +83,7 @@
 
 .trackHeader
 {
-    background-color: #000000;
+    background-color: #8b8b8b;
     width: 140;
     padding-top: 0;
     margin-top: 0;
@@ -99,14 +99,6 @@ KeyContainer { /* recorded item container */
     position-left: 0;
     position-right: 0;
     height: 50;
-    background-color: rgb(100, 100, 100);
-    margin-left: 1;
-}
-
-.item { /* recorded item */
-    border-color: #ff0000;
-    background-color: #00ff00;
-    position-type: absolute;
 }
 
 /* Track elements */
