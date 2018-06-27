@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    public class HeaderElement : VisualElement
+    class HeaderElement : VisualElement
     {
-        public HeaderElement()
+        ViewState m_State;
+        
+        public HeaderElement(ViewState state)
         {
+            m_State = state;
+            
             name = "header";
             AddToClassList("container");
             AddStyleSheetPath("Stylesheets/Styles");
@@ -22,20 +27,47 @@ namespace GameDebugger
                 name = "recordButton",
                 text = "Record"
             });
+
+            var toggle = new Toggle(OnToggle)
+            {
+                name = "recordOnPlay",
+                text = "Record on play"
+            };
+            toggle.value = state.recordOnPlay;
+            EditorApplication.playModeStateChanged += RecordOnPlay;
+            Add(toggle);
         }
 
-        void OnPlay()
+        void OnToggle()
         {
-            if (GameDebuggerRecorder.isRecording)
+            m_State.recordOnPlay = !m_State.recordOnPlay;
+        }
+
+        void RecordOnPlay(PlayModeStateChange state)
+        {
+            if (m_State.recordOnPlay && state == PlayModeStateChange.EnteredPlayMode)
+                OnRecord();
+        }
+
+        static void OnPlay()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
-            if (GameDebuggerPlayer.isPlaying)
-                GameDebuggerPlayer.StopReplay();
+            if (GameDebuggerRecorder.isPlaying)
+            {
+                if (GameDebuggerRecorder.isPaused)
+                    GameDebuggerRecorder.StartReplay();
+                else
+                    GameDebuggerRecorder.PauseReplay();
+            }
             else
-                GameDebuggerPlayer.StartReplay();
+                GameDebuggerRecorder.StartReplay();
         }
 
-        void OnRecord()
+        static void OnRecord()
         {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
             if (GameDebuggerRecorder.isRecording)
                 GameDebuggerRecorder.StopRecording();
             else

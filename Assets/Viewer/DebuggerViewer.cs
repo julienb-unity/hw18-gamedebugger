@@ -1,13 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    public class DebuggerViewer : EditorWindow
+    [Serializable]
+    class ViewState
+    {
+        public bool recordOnPlay;
+    }
+
+    class DebuggerViewer : EditorWindow
     {
         TimeManager m_TimeMgr = new TimeManager();
         RefreshScheduler m_Scheduler;
+        ViewState m_State = new ViewState();
         
         // Add menu named "My Window" to the Window menu
         [MenuItem("Window/GameDebugger")]
@@ -33,7 +41,7 @@ namespace GameDebugger
             var root = this.GetRootVisualContainer();
             m_Scheduler = new RefreshScheduler(root);
 
-            var header = new HeaderElement();
+            var header = new HeaderElement(m_State);
             var timelineElement = new TimelineElement(m_TimeMgr, m_Scheduler);
 
             root.Add(header);

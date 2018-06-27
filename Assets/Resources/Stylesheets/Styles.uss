@@ -19,6 +19,11 @@
 {   
 }
 
+#recordOnPlay
+{
+    align-self: center;
+}
+
 #timeArea{
     height: 50;
     margin-left: 150;

@@ -46,23 +46,6 @@ public class GameDebuggerDatabase : ScriptableObject
 			m_TypeToRecordable[t].Add(recordable);				
 			Debug.Log(recordable); 
 		}
-		
-		
-		FilteredGameObjects+=OnFilteredGameObjects;
-
-	}
-
-	private static void OnFilteredGameObjects(List<GameObject> obj)
-	{
-		for (int i = 0; i < SceneManager.sceneCount; i++)
-		{
-			var scene = SceneManager.GetSceneAt(i);
-			foreach (var rootGameObject in scene.GetRootGameObjects())
-			{
-				if (PrefabUtility.GetPrefabType(rootGameObject) == PrefabType.PrefabInstance)
-					obj.Add(rootGameObject);
-			}
-		}
 	}
 
 	public static void Clear()
