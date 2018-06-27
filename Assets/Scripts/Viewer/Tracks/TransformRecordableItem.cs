@@ -44,6 +44,9 @@ namespace GameDebugger
             }
         }
 
+        public void OnClick(VisualElement panel, float time)
+        {}
+
         void DrawBackground(Track track)
         {
             var keycontainerRect = track.contentRect;
