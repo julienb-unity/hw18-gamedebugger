@@ -79,7 +79,7 @@ namespace GameDebugger
                 if (GameDebuggerDatabase.NumFrameRecords > 0)
                     maxTime = GameDebuggerDatabase.GetRecords(GameDebuggerDatabase.NumFrameRecords - 1).time;
                 maxTime = Math.Max(5.0f, maxTime);
-                m_SetShownRange.Invoke(m_TimeArea, new object[] { 0.0f, maxTime });
+                m_SetShownRange.Invoke(m_TimeArea, new object[] { maxTime -10.0f, maxTime });
                 m_RangeLock.SetValue(m_TimeArea, true, null);
             }
             else
