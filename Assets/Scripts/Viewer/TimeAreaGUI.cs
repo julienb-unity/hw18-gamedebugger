@@ -16,13 +16,14 @@ namespace GameDebugger
         MethodInfo m_TimeToPixel;
         MethodInfo m_PixelToTime;
         MethodInfo m_SetShownRange;
+        PropertyInfo m_RangeLock;
 
         public TimeAreaGUI()
         {
             //Since the TimeArea is private, we need to get access to it by reflection, 
             var assembly = typeof(UnityEditor.Editor).Assembly;
             var timeAreaType = assembly.GetType("UnityEditor.TimeArea");
-            m_TimeArea = Activator.CreateInstance(timeAreaType, new object[]{true, false, false});
+            m_TimeArea = Activator.CreateInstance(timeAreaType, new object[]{true, true, false});
             m_BeginView = timeAreaType.GetMethod("BeginViewGUI");
             m_EndView = timeAreaType.GetMethod("EndViewGUI");
             var signature = new[] {typeof (Rect), typeof (float)};
@@ -32,11 +33,9 @@ namespace GameDebugger
             timeAreaHRangeMin.SetValue(m_TimeArea, 0.0f, null);
             m_TimeToPixel = timeAreaType.GetMethod("TimeToPixel", new[] {typeof(float), typeof(Rect)});
             m_PixelToTime = timeAreaType.GetMethod("PixelToTime", new[] {typeof(float), typeof(Rect)});
-            var hRangeLocked = timeAreaType.GetProperty("hRangeLocked");
-            hRangeLocked.SetValue(m_TimeArea, true, null);
-            var scaleWithWindow = timeAreaType.GetProperty("scaleWithWindow");
             m_SetShownRange = timeAreaType.GetMethod("SetShownHRange", new[]{typeof(float), typeof(float)});
-            scaleWithWindow.SetValue(m_TimeArea, true, null);
+            m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, (float)1});
+            m_RangeLock = timeAreaType.GetProperty("hRangeLocked");
         }
 
         public float TimeToPixel(float time)
@@ -73,11 +72,20 @@ namespace GameDebugger
             m_BeginView.Invoke(m_TimeArea, null);
             m_DrawTimeRuler.Invoke(m_TimeArea, new object[] {rect, 60.0f});
             m_EndView.Invoke(m_TimeArea, null);
-            float maxTime = 0.0f;
-            if (GameDebuggerDatabase.NumFrameRecords > 0)
-                maxTime = GameDebuggerDatabase.GetRecords(GameDebuggerDatabase.NumFrameRecords - 1).time;
-            maxTime = Math.Max(5.0f, maxTime);
-            m_SetShownRange.Invoke(m_TimeArea, new object[] {0.0f, maxTime});
+
+            if (GameDebuggerRecorder.IsRecording)
+            {
+                float maxTime = 0.0f;
+                if (GameDebuggerDatabase.NumFrameRecords > 0)
+                    maxTime = GameDebuggerDatabase.GetRecords(GameDebuggerDatabase.NumFrameRecords - 1).time;
+                maxTime = Math.Max(5.0f, maxTime);
+                m_SetShownRange.Invoke(m_TimeArea, new object[] { 0.0f, maxTime });
+                m_RangeLock.SetValue(m_TimeArea, true, null);
+            }
+            else
+            {
+                m_RangeLock.SetValue(m_TimeArea, false, null);
+            }
         }
     }
 }
