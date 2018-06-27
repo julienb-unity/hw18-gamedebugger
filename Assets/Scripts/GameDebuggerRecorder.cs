@@ -63,17 +63,21 @@ public class GameDebuggerRecorder
 		isPaused = false;
 	}
 	
-	public static bool ReplayFrame(int frame)
+	public static void ReplayFrame(int frame)
 	{
 		if (frame >= GameDebuggerDatabase.NumFrameRecords)
 		{
-			return true;
+			return;
 		}
 
 		EditorApplication.isPaused = true;
 		GameDebuggerDatabase.ReplayFrame(frame);
+	}
 
-		return false;
+	public static void ReplayTime(float time)
+	{
+		EditorApplication.isPaused = true;
+		GameDebuggerDatabase.ReplayTime(time);
 	}
 
 	public static void StartRecording()
