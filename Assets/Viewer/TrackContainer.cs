@@ -39,7 +39,7 @@ namespace GameDebugger
             var instanceIdList = (List<int>)m_ListView.itemsSource;
             var instanceId = instanceIdList[index];
             var track = (Track) elt;
-            m_TrackItemByInstance[instanceId].DrawOnTrack(track);
+            track.item = m_TrackItemByInstance[instanceId];
         }
 
         void DrawClipAtTime(VisualElement trackContainer, float time, float end, string label)
@@ -77,7 +77,7 @@ namespace GameDebugger
                     }
                 }
             }
-
+            
             numFrames = GameDebuggerDatabase.NumFrameRecords;
 
             m_ListView.itemsSource = m_TrackItemByInstance.Keys.ToList();
