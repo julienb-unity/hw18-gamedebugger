@@ -4,10 +4,14 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    public class HeaderElement : VisualElement
-    {  
-        public HeaderElement()
+    class HeaderElement : VisualElement
+    {
+        ViewState m_State;
+        
+        public HeaderElement(ViewState state)
         {
+            m_State = state;
+            
             name = "header";
             AddToClassList("container");
             AddStyleSheetPath("Stylesheets/Styles");
@@ -29,19 +33,19 @@ namespace GameDebugger
                 name = "recordOnPlay",
                 text = "Record on play"
             };
-            toggle.value = ViewState.Get().recordOnPlay;
+            toggle.value = state.recordOnPlay;
             EditorApplication.playModeStateChanged += RecordOnPlay;
             Add(toggle);
         }
 
-        static void OnToggle()
+        void OnToggle()
         {
-            ViewState.Get().recordOnPlay = !ViewState.Get().recordOnPlay;
+            m_State.recordOnPlay = !m_State.recordOnPlay;
         }
 
-        static void RecordOnPlay(PlayModeStateChange state)
+        void RecordOnPlay(PlayModeStateChange state)
         {
-            if (ViewState.Get().recordOnPlay && state == PlayModeStateChange.EnteredPlayMode)
+            if (m_State.recordOnPlay && state == PlayModeStateChange.EnteredPlayMode)
                 OnRecord();
         }
 
