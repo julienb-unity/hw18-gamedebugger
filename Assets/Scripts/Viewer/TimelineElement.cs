@@ -6,7 +6,7 @@ namespace GameDebugger
 {
     class TimelineElement : VisualElement
     {
-        public TimelineElement(RefreshScheduler scheduler)
+        public TimelineElement(RefreshScheduler scheduler, VisualElement extraViewer)
         {
             name = "timeline";
             AddStyleSheetPath("Replay/Stylesheets/Styles");
@@ -33,7 +33,7 @@ namespace GameDebugger
             playhead.AddManipulator(new PlayheadDragManipulator(playhead));
             imguiContainer.AddManipulator(new TimeAreaCallbackManipulator(timeAreaGUI, playhead));
 
-            var trackContainer = new TrackContainer(timeProvider, scheduler);
+            var trackContainer = new TrackContainer(timeProvider, scheduler, extraViewer);
             Add(trackContainer);
 
             //playhead needs to be on top of the tracks

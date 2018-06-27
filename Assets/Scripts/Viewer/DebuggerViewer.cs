@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Experimental.UIElements;
+using UnityEngine.Experimental.UIElements;
+using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GameDebugger
 {
@@ -40,11 +42,24 @@ namespace GameDebugger
             var root = this.GetRootVisualContainer();
             m_Scheduler = new RefreshScheduler(root);
 
+            var debuggerView = new VisualElement();
+            var extraViewer = new VisualElement();
+            debuggerView.name = "debuggerView";
+            extraViewer.name = "extraViewer";
+            debuggerView.style.flex = 1;
+            
             var header = new HeaderElement(m_State);
-            var timelineElement = new TimelineElement(m_Scheduler);
+            var timelineElement = new TimelineElement(m_Scheduler, extraViewer);
 
-            root.Add(header);
-            root.Add(timelineElement);
+            debuggerView.Add(header);
+            debuggerView.Add(timelineElement);
+            
+            root.Add(debuggerView);
+            
+            extraViewer.Add(new Label("This will change soon... be patient"));
+            root.Add(extraViewer);
+            root.style.flexDirection = FlexDirection.Row;
         }
+        
     }
 }
