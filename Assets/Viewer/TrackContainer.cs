@@ -69,11 +69,11 @@ namespace GameDebugger
                 foreach (var recordInfo in records)
                 {
                     if (!m_TrackItemByInstance.ContainsKey(recordInfo.instanceID))
-                        m_TrackItemByInstance[recordInfo.instanceID] = new TrackItem(recordInfo, f);
+                        m_TrackItemByInstance[recordInfo.instanceID] = new TrackItem(recordInfo.instanceID, f);
                     else
                     {
                         var item = m_TrackItemByInstance[recordInfo.instanceID];
-                        item.Refresh(f);
+                        item.Refresh(recordInfo, f);
                     }
                 }
             }

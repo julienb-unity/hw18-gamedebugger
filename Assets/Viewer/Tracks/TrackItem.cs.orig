@@ -7,15 +7,22 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class TrackItem
+    struct TrackItem
     {
-        int m_InstanceId;
-        List<int> m_Keys;
-
+<<<<<<< Updated upstream:Assets/Viewer/Tracks/TrackItem.cs
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
         
+        List<int> m_Keys = new List<int>(200);
+        RecordableInfo recordableInfo { get; set; }
+        
+        public TrackItem(RecordableInfo recordableInfo, int frame)
+=======
+        int m_InstanceId;
+        List<int> m_Keys;
+        
         public TrackItem(int instanceId, int frame)
+>>>>>>> Stashed changes:Assets/Viewer/Items/TrackItem.cs
         {
             m_Keys = new List<int>(200){frame};
             m_InstanceId = instanceId;
@@ -29,14 +36,25 @@ namespace GameDebugger
             DrawLine(track, converter);
             DrawKeys(converter);
         }
+<<<<<<< Updated upstream:Assets/Viewer/Tracks/TrackItem.cs
+        
+        public void Refresh(int frame)
+=======
 
         public void Refresh(RecordableInfo recordableInfo, int frame)
+>>>>>>> Stashed changes:Assets/Viewer/Items/TrackItem.cs
         {
             var tr = recordableInfo.recordable as TransformRecordable;
             if (tr != null)
             {
+<<<<<<< Updated upstream:Assets/Viewer/Tracks/TrackItem.cs
+                var lastRecords = GameDebuggerDatabase.GetRecords(m_Keys.LastOrDefault());
+                var info = lastRecords.Find(otherRecInfo => recordableInfo.instanceID == otherRecInfo.instanceID);
+=======
                 var lastRecords = GameDebuggerDatabase.GetRecords(m_Keys.Last());
-                var info = lastRecords.Find(otherRecInfo => m_InstanceId == otherRecInfo.instanceID);
+                var instanceId = m_InstanceId;
+                var info = lastRecords.Find(otherRecInfo => instanceId == otherRecInfo.instanceID);
+>>>>>>> Stashed changes:Assets/Viewer/Items/TrackItem.cs
                 if (!tr.ApproximatelyEquals((TransformRecordable)info.recordable))
                     m_Keys.Add(frame);
             }
