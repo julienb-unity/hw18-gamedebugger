@@ -24,7 +24,7 @@ namespace GameDebugger
             
             var trackTemplate = Resources.Load<VisualTreeAsset>("Replay/GameDebuggerTrackTemplate");
             
-            m_ListView = new ListView(new List<int>(), 50, () => new Track(trackTemplate, m_TimeConverter), DrawItem);
+            m_ListView = new ListView(new List<int>(), 50, () => CreateTrack(trackTemplate), DrawItem);
             m_ListView.selectionType = SelectionType.None;
             Add(m_ListView);
             
@@ -34,6 +34,13 @@ namespace GameDebugger
                 m_ListView.Refresh();
             };
             scheduler.Refresh += RefreshTracks;
+        }
+
+        Track CreateTrack(VisualTreeAsset asset)
+        {
+            var track = new Track(asset, m_TimeConverter);
+            track.AddManipulator(new TrackContentManipulator(m_TimeConverter, m_ExtraViwer));
+            return track;
         }
 
         void DrawItem(VisualElement elt, int index)

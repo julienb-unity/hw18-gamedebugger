@@ -93,6 +93,23 @@ namespace GameDebugger
             }
         }
 
+        public void OnClick(VisualElement panel, float time)
+        {
+            for(int i = m_LayerNames.Count - 1; i >= 0; i--)
+            {
+                if (time > m_LayerNames[i].time)
+                {
+                    DisplayInExtraPanel(panel, m_LayerNames[i].name);
+                    return;
+                }
+            }
+        }
+
+        static void DisplayInExtraPanel(VisualElement panel, string labelName)
+        {
+            panel.Add(new Label(labelName));
+        }
+
         static Color StringToColor(string str)
         {
             var hash = str.GetHashCode();

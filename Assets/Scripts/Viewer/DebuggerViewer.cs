@@ -41,10 +41,12 @@ namespace GameDebugger
         {
             var root = this.GetRootVisualContainer();
             m_Scheduler = new RefreshScheduler(root);
+            root.AddStyleSheetPath("Replay/Stylesheets/Styles");
 
             var debuggerView = new VisualElement();
             var extraViewer = new VisualElement();
             debuggerView.name = "debuggerView";
+            
             extraViewer.name = "extraViewer";
             debuggerView.style.flex = 1;
             
@@ -56,7 +58,6 @@ namespace GameDebugger
             
             root.Add(debuggerView);
             
-            extraViewer.Add(new Label("This will change soon... be patient"));
             root.Add(extraViewer);
             root.style.flexDirection = FlexDirection.Row;
         }

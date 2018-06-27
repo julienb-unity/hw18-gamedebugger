@@ -11,6 +11,17 @@
     justify-content: center;
 }
 
+#extraViewer
+{
+    width:200;
+    background-color: #969696;
+    border-color: #575757;
+    border-left-width: 2;
+    border-right-width: 2;
+    border-top-width: 2;
+    border-bottom-width: 2;
+}
+
 #playButton
 {   
 }
