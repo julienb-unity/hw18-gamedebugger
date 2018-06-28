@@ -55,7 +55,7 @@ namespace GameDebugger
 
                 var pixel = converter.TimeToPixel(m_Inputs[i].time);
                 var line = new Rect(pixel, 0, 3, 45);
-                var pos = new Rect(pixel+1, m_Height[i], 50, 50);
+                var pos = new Rect(pixel+3, m_Height[i], 50, 50);
                 foreach (var input in m_Inputs[i].inputs)
                 {
                     var color = StringToColor(input);
