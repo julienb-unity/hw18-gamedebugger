@@ -23,11 +23,13 @@ public class GameDebuggerRecorder
 		GameDebuggerDatabase.Init();
 	}
 
+	private static double startTime;
 	private static void EditorUpdate()
 	{
 		if (isPlaying && !isPaused)
 		{
-			ReplayFrame(currentFrame);
+			var time = EditorApplication.timeSinceStartup - startTime;
+			ReplayTime(time);
 			currentFrame++;
 			if (currentFrame >= GameDebuggerDatabase.NumFrameRecords)
 				isPlaying = false;
@@ -43,6 +45,7 @@ public class GameDebuggerRecorder
 
 			isPaused = false;
 			isPlaying = true;
+			startTime = EditorApplication.timeSinceStartup;
 			if (currentFrame >= GameDebuggerDatabase.NumFrameRecords)
 				currentFrame = 0;
 		}
@@ -74,7 +77,7 @@ public class GameDebuggerRecorder
 		GameDebuggerDatabase.ReplayFrame(frame);
 	}
 
-	public static void ReplayTime(float time)
+	public static void ReplayTime(double time)
 	{
 		EditorApplication.isPaused = true;
 		GameDebuggerDatabase.ReplayTime(time);

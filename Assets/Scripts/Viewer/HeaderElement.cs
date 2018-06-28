@@ -45,7 +45,7 @@ namespace GameDebugger
             Add(new Button(OnLoadSavedRecording)
             {
                 name = "loadLastRecordingButton",
-                text = "Load last recording"
+                text = "Load from file"
             });
         }
 

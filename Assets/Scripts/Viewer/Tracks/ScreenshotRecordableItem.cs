@@ -42,8 +42,12 @@ namespace GameDebugger
         static Rect GetRectForScreenshot(ITimeConverter converter, ScreenshotForTime screenshot)
         {
             var pixel = converter.TimeToPixel(screenshot.time);
-            var width = screenshot.screenshot.width * 45 / screenshot.screenshot.height;
-            return new Rect(pixel, 0, width, 45);
+            if (screenshot.screenshot != null)
+            {
+                var width = screenshot.screenshot.width * 45 / screenshot.screenshot.height;
+                return new Rect(pixel, 0, width, 45);
+            }
+            return Rect.zero;
         }
 
         public override void OnClick(VisualElement panel, float time)

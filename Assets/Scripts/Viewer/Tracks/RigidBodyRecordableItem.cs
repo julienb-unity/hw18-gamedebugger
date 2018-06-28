@@ -35,7 +35,7 @@ namespace GameDebugger
             {
                 var lastRecords = GameDebuggerDatabase.GetRecords(m_FrameIds.Last());
                 var info = lastRecords.records.Find(otherRecInfo => m_InstanceId == otherRecInfo.instanceID);
-                if (!rr.ApproximatelyEquals((RigidBodyRecordable) info.recordable))
+                if (info.recordable != null && !rr.ApproximatelyEquals((RigidBodyRecordable) info.recordable))
                 {
                     m_FrameIds.Add(frame);
                     m_Velocities.Add(rr.speed.magnitude);

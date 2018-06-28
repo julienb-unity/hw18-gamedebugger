@@ -4,6 +4,7 @@ using System.Linq;
 using GameDebugger;
 using Recordables;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 // Purpose of this class:
@@ -137,7 +138,7 @@ public class GameDebuggerDatabase
 		return m_frameRecords[frame];
 	}
 	
-	public static void ReplayTime(float time)
+	public static void ReplayTime(double time)
 	{
 		if (NumFrameRecords <= 0)
 			return;
