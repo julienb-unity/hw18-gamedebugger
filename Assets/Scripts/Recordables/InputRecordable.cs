@@ -14,7 +14,7 @@ namespace Recordables
         [SerializeField]
         List<string> m_Inputs = new List<string>();
 
-        public IEnumerable<string> inputs
+        public List<string> inputs
         {
             get { return m_Inputs; }
         }

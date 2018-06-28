@@ -12,9 +12,9 @@ namespace GameDebugger
         struct InputsForTime
         {
             public float time;
-            public IEnumerable<string> inputs;
+            public List<string> inputs;
 
-            public InputsForTime(float time, IEnumerable<string> inputs)
+            public InputsForTime(float time, List<string> inputs)
             {
                 this.time = time;
                 this.inputs = inputs;
