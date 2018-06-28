@@ -25,8 +25,6 @@ namespace Recordables
             if (recorder != null)
             {
                 m_Inputs.AddRange(recorder.inputs);
-                foreach(var i in recorder.inputs)
-                    Debug.Log(i);
                 recorder.FlushInputs();
             }
 
