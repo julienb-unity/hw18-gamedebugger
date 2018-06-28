@@ -1,10 +1,11 @@
 ﻿using System;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Recordables
 {
     [Serializable]
-    public class Recordable
+    public class Recordable 
     {
         public virtual bool OnRecord(Recordable previous, Object source)
         {

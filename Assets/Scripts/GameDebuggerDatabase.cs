@@ -168,7 +168,6 @@ public class GameDebuggerDatabase
 
 	private static void RecordGameObject(GameObject gameObject)
 	{
-		RecordData(typeof(GameObject), gameObject);
 		foreach (var component in gameObject.GetComponents<Component>())
 		{
 			RecordData(component.GetType(), component);
