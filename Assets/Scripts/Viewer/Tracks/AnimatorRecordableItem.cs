@@ -8,22 +8,18 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class AnimatorRecordableItem :ITrackItem
+    class AnimatorRecordableItem : TrackItem
     {
-        int m_InstanceId;
-
         struct LayerInfo
         {
             public float time;
             public string name;
         }
         
-        readonly Color m_BackgroundColor = Color.Lerp(Color.black, Color.white, 0.7f);
         List<LayerInfo> m_LayerNames = new List<LayerInfo>(5);
 
-        public AnimatorRecordableItem(RecordableInfo recordableInfo, int frame)
+        public AnimatorRecordableItem(RecordableInfo recordableInfo, int frame) : base(recordableInfo.instanceID)
         {
-            m_InstanceId = recordableInfo.instanceID;
             m_LayerNames.Add(new LayerInfo
             {
                 time= GameDebuggerDatabase.GetRecords(frame).time, 
@@ -39,12 +35,8 @@ namespace GameDebugger
             return name == null? string.Empty : name;
         }
         
-        public void Draw(Track track, ITimeConverter converter)
+        protected override void DrawItem(Track track, ITimeConverter converter)
         {
-            var o = EditorUtility.InstanceIDToObject(m_InstanceId);
-            track.Q<Label>().text = o.name;
-            
-            DrawBackground(track);
             float lastTime = 0;
             var count = m_LayerNames.Count;
             var oldColor = GUI.backgroundColor;
@@ -67,17 +59,8 @@ namespace GameDebugger
 
             GUI.backgroundColor = oldColor;
         }
-        
-        void DrawBackground(Track track)
-        {
-            var keycontainerRect = track.contentRect;
-            keycontainerRect.x += 145;
-            keycontainerRect.width -= 145;
-            keycontainerRect.height -= 5;
-            EditorGUI.DrawRect(keycontainerRect, m_BackgroundColor);
-        }
 
-        public void Refresh(RecordableInfo recordableInfo, int frame)
+        public override void Refresh(RecordableInfo recordableInfo, int frame)
         {
             var ar = recordableInfo.recordable as AnimatorRecordable;
             if (ar != null)
@@ -93,7 +76,7 @@ namespace GameDebugger
             }
         }
 
-        public void OnClick(VisualElement panel, float time)
+        public override void OnClick(VisualElement panel, float time)
         {
             for(int i = m_LayerNames.Count - 1; i >= 0; i--)
             {

@@ -4,7 +4,7 @@ namespace GameDebugger
 {
     static class TrackItemFactory
     {
-        public static ITrackItem Create(RecordableInfo recordableInfo, int frame)
+        public static TrackItem Create(RecordableInfo recordableInfo, int frame)
         {
             if (recordableInfo.recordable is TransformRecordable)
                 return new TransformRecordableItem(recordableInfo, frame);
