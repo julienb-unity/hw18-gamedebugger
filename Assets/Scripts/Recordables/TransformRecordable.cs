@@ -16,11 +16,11 @@ namespace Recordables
 
         public override bool OnRecord(Recordable previous, Object source)
         {
-            var t = source as Transform;
+            var t = (Transform) source;
             if (t.gameObject.isStatic)
                 return false;
-            
-            var prev = previous as TransformRecordable;
+
+            var prev = (TransformRecordable) previous;
 
             if (prev != null && prev.localPosition == t.position && prev.localRotation == t.rotation && prev.localScale == t.localScale)
                 return false;
@@ -34,15 +34,16 @@ namespace Recordables
 
         public override void OnReplay(Object source)
         {
-            var component = source as Component;
-            component.gameObject.transform.localPosition = localPosition;
-            component.gameObject.transform.localRotation = localRotation;
-            component.gameObject.transform.localScale = localScale;
+            var t = (Transform) source;
+            t.localPosition = localPosition;
+            t.localRotation = localRotation;
+            t.localScale = localScale;
         }
 
         public bool ApproximatelyEquals(TransformRecordable other)
         {
-            return Vector3.Distance(localPosition, other.localPosition) <= 0.01f;
+            return Vector3.Distance(localPosition, other.localPosition) <= 0.01f &&
+                Mathf.Abs(Mathf.Acos(localRotation.w) - Mathf.Acos(other.localRotation.w)) <= 0.1f;
         }
     }
 }
