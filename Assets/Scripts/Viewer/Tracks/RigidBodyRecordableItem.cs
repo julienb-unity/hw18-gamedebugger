@@ -49,7 +49,7 @@ namespace GameDebugger
                 return;
 
             // Get max velocity.
-            var maxVelocity = m_Velocities.Max(v => v);
+            var maxVelocity = Mathf.Max(m_Velocities.Max(v => v), 0.1f);
 
             var height = track.contentRect.height;
 

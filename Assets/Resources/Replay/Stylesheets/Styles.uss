@@ -13,7 +13,7 @@
 
 #extraViewer
 {
-    width:200;
+    width:250;
     background-color: #969696;
     border-color: #575757;
     border-left-width: 2;
@@ -116,15 +116,4 @@ KeyContainer { /* recorded item container */
     position-right: 0;
     height: 50;
 }
-
-/* Track elements */
-
-.clip {
-    position-type: absolute;
-    background-image: none;
-    background-color: rgb(60, 120, 170);
-    height: 50;
-    /*margin-left: -150;*/
-}
-
 
