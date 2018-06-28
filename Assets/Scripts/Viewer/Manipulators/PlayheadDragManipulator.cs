@@ -73,6 +73,8 @@ namespace GameDebugger
 
         void SetTime(float time)
         {
+            GameDebuggerRecorder.StopReplay();
+            GameDebuggerRecorder.PauseReplay();
             m_Playhead.SetTime(time);
         }
 

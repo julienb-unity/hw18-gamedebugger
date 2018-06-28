@@ -38,6 +38,16 @@ namespace GameDebugger
 
             //playhead needs to be on top of the tracks
             playhead.BringToFront();
+
+            scheduler.Refresh += () =>
+            {
+                if (!GameDebuggerRecorder.isPlaying)
+                    return;
+                var frame = GameDebuggerRecorder.currentFrame;
+                var time = GameDebuggerDatabase.GetRecords(frame).time;
+                playhead.SetTime(time);
+                
+            };
         }
     }
 }
