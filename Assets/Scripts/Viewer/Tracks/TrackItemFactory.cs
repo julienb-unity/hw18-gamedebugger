@@ -14,6 +14,8 @@ namespace GameDebugger
                 return new RigidBodyRecordableItem(recordableInfo, frame);
             if (recordableInfo.recordable is InputRecordable)
                 return new InputRecordableItem(recordableInfo, frame);
+            if (recordableInfo.recordable is ScreenShotRecordable)
+                return new ScreenshotRecordableItem(recordableInfo, frame);
             return null;
         }
     }
