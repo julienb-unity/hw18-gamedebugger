@@ -33,11 +33,15 @@ namespace GameDebugger
         {
             foreach (var screenshot in m_Screenshots)
             {
-                //////////ASPECT RATIO
-                var pixel = converter.TimeToPixel(screenshot.time);
-                var rect = new Rect(pixel, 0, 100, 45);
-                GUI.DrawTexture(rect, screenshot.screenshot);
+                GUI.DrawTexture(GetRectForScreenshot(converter, screenshot), screenshot.screenshot);
             }
+        }
+
+        static Rect GetRectForScreenshot(ITimeConverter converter, ScreenshotForTime screenshot)
+        {
+            var pixel = converter.TimeToPixel(screenshot.time);
+            var width = screenshot.screenshot.width * 45 / screenshot.screenshot.height;
+            return new Rect(pixel, 0, width, 45);
         }
 
         public override void Refresh(RecordableInfo recordableInfo, int frame)
