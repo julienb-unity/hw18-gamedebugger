@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Recordables;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
@@ -42,6 +44,17 @@ namespace GameDebugger
             var pixel = converter.TimeToPixel(screenshot.time);
             var width = screenshot.screenshot.width * 45 / screenshot.screenshot.height;
             return new Rect(pixel, 0, width, 45);
+        }
+
+        public override void OnClick(VisualElement panel, float time)
+        {
+            var screenshot = m_Screenshots.LastOrDefault(i => time > i.time);
+            var box = new Image();
+            panel.Add(box);
+            box.scaleMode = ScaleMode.ScaleToFit;
+            box.image = screenshot.screenshot;
+            box.style.width = 250;
+            box.style.height = panel.contentRect.width * screenshot.screenshot.height / screenshot.screenshot.width;
         }
 
         public override void Refresh(RecordableInfo recordableInfo, int frame)
