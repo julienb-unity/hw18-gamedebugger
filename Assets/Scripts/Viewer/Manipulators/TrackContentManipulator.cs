@@ -21,7 +21,7 @@ namespace GameDebugger
         void OnMouseUp(MouseUpEvent evt)
         {
             var track = target as Track;
-            if (track != null)
+            if (track != null && track.item != null)
             {
                 m_ExtraViewPanel.Clear();
                 track.item.OnClick(m_ExtraViewPanel, m_TimeConverter.PixelToTime(evt.mousePosition.x));

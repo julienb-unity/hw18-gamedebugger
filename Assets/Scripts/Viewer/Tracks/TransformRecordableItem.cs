@@ -47,9 +47,12 @@ namespace GameDebugger
 
         public void OnClick(VisualElement panel, float time)
         {
-            var frameInfo = GameDebuggerDatabase.FrameRecords.FindLast(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
-            var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
-            DrawRecorderInfo(panel, recorderInfo.recordable);
+            var frameInfo = GameDebuggerDatabase.FrameRecords.LastOrDefault(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
+            if (frameInfo != null)
+            {
+                var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
+                DrawRecorderInfo(panel, recorderInfo.recordable);
+            }
         }
 
         static void DrawRecorderInfo(VisualElement panel, Recordable recorder)
