@@ -12,6 +12,8 @@ namespace GameDebugger
                 return new AnimatorRecordableItem(recordableInfo, frame);
             if (recordableInfo.recordable is RigidBodyRecordable)
                 return new RigidBodyRecordableItem(recordableInfo, frame);
+            if (recordableInfo.recordable is InputRecordable)
+                return new InputRecordableItem(recordableInfo, frame);
             return null;
         }
     }
