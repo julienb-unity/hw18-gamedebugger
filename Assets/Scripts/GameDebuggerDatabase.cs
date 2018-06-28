@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GameDebugger;
 using Recordables;
 using UnityEditor;
@@ -197,6 +196,8 @@ public class GameDebuggerDatabase
 
 	public static void ReplayFrame(int frame)
 	{
+		HashSet<SkinnedMeshRenderer> smrs = new HashSet<SkinnedMeshRenderer>();
+
 		int lastSync = frame - frame % 60;
 		for (int i = lastSync; i < NumFrameRecords && i <= frame; ++i)
 		{
@@ -204,8 +205,23 @@ public class GameDebuggerDatabase
 			{
 				var obj = EditorUtility.InstanceIDToObject(recordableInfo.instanceID);
 				if (obj != null)
+				{
 					recordableInfo.recordable.OnReplay(obj);
+
+					var smr = ((Component) obj).GetComponent<SkinnedMeshRenderer>();
+					if (smr != null)
+						smrs.Add(smr);
+				}
 			}
+		}
+
+		// HACK: Force update of the SkinnedMeshRenderer component.
+		//       Bug happens apparently only on Mac.
+		//       Tested from 2018.2.0b6 up until 2018.3.0a1, still happens.
+		foreach (var smr in smrs)
+		{
+			smr.enabled = false;
+			smr.enabled = true;
 		}
 	}
 
