@@ -43,6 +43,29 @@ namespace GameDebugger
             }
         }
 
+        public override void OnClick(VisualElement panel, float time)
+        {
+            var frameInfo = GameDebuggerDatabase.FrameRecords.LastOrDefault(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
+            if (frameInfo != null)
+            {
+                var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
+                DrawRecorderInfo(panel, recorderInfo.recordable);
+            }
+        }
+
+        static void DrawRecorderInfo(VisualElement panel, Recordable recorder)
+        {
+            var rr = recorder as RigidBodyRecordable;
+            if (rr != null)
+            {
+                var text = string.Format(
+                    "Speed:\n    {3:F2} m/s\n\nVelocity:\n    x: {0:F2}\n    y: {1:F2}\n    z: {2:F2}",
+                    rr.speed.magnitude,
+                    rr.speed.x, rr.speed.y, rr.speed.z);
+                panel.Add(new Label(text));
+            }
+        }
+
         void DrawKeys(Track track, ITimeConverter converter)
         {
             if (m_FrameIds.Count == 0)
