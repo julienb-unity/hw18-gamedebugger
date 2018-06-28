@@ -138,15 +138,16 @@ public class GameDebuggerDatabase
 		return m_frameRecords[frame];
 	}
 	
-	public static void ReplayTime(double time)
+	public static int ReplayTime(double time)
 	{
 		if (NumFrameRecords <= 0)
-			return;
+			return 0;
 		int frame = NumFrameRecords -1;
 		while (m_frameRecords[frame].time > time)
 			frame--;
 		if (frame>=0)
 			ReplayFrame(frame);
+		return frame;
 	}
 
 	public static void ReplayFrame(int frame)

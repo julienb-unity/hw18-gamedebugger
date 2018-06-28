@@ -29,8 +29,7 @@ public class GameDebuggerRecorder
 		if (isPlaying && !isPaused)
 		{
 			var time = EditorApplication.timeSinceStartup - startTime;
-			ReplayTime(time);
-			currentFrame++;
+			currentFrame = ReplayTime(time);
 			if (currentFrame >= GameDebuggerDatabase.NumFrameRecords)
 				isPlaying = false;
 		}	
@@ -77,10 +76,10 @@ public class GameDebuggerRecorder
 		GameDebuggerDatabase.ReplayFrame(frame);
 	}
 
-	public static void ReplayTime(double time)
+	public static int ReplayTime(double time)
 	{
 		EditorApplication.isPaused = true;
-		GameDebuggerDatabase.ReplayTime(time);
+		return GameDebuggerDatabase.ReplayTime(time);
 	}
 
 	public static void StartRecording()
