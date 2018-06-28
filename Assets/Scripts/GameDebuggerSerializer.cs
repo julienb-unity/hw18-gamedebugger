@@ -61,7 +61,7 @@ public class GameDebuggerSerializer
 			var scene = SceneManager.GetSceneAt(i);
 			foreach (var rootGameObject in scene.GetRootGameObjects())
 			{
-				components.AddRange(rootGameObject.GetComponents<Component>());
+				components.AddRange(rootGameObject.GetComponentsInChildren<Component>());
 			}
 		}
 		
@@ -70,7 +70,7 @@ public class GameDebuggerSerializer
 		{
 			var id = GetID(component);
 			if (id != 0)
-				localFileIDToInstanceID.Add(id,component.GetInstanceID());
+				localFileIDToInstanceID.Add(id, component.GetInstanceID());
 		}
 		
 		var rec = JsonUtility.FromJson<Recording>(File.ReadAllText(filePath));

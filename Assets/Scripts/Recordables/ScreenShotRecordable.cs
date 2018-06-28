@@ -18,7 +18,7 @@ namespace Recordables
         }
         public override bool OnRecord(Recordable previous, Object source)
 		{
-            if (GameDebuggerRecorder.currentFrame %60 == 0)
+            if (GameDebuggerRecorder.currentFrame % 60 == 0)
             {
                 var s = source as MonoBehaviour;
                 if (s != null)

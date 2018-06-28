@@ -12,6 +12,7 @@ using UnityEngine;
 //   - Provide API for the editor window to send data
 public class GameDebuggerDatabase
 {
+	public static event Action GameDebugerDatabaseLoaded;
 	public static event Action<List<GameObject>> FilteredGameObjects;
 	private static Dictionary<Type,List<Type>> m_TypeToRecordable = new Dictionary<Type, List<Type>>();
 	private static Dictionary<int, Recordable> m_sessionRecords = new Dictionary<int, Recordable>();
@@ -28,7 +29,11 @@ public class GameDebuggerDatabase
 	public static List<FrameInfo> FrameRecords
 	{
 		get { return m_frameRecords; }
-		set { m_frameRecords = value; }
+		set
+		{
+			m_frameRecords = value;
+			if (GameDebugerDatabaseLoaded != null) GameDebugerDatabaseLoaded();
+		}
 	}
 
 	public static float StartRecordingTime
@@ -88,57 +93,6 @@ public class GameDebuggerDatabase
 				RecordGameObject(gameObject);
 			}
 		}
-//		for (int i = 0; i < SceneManager.sceneCount; i++)
-//		{
-//			var scene = SceneManager.GetSceneAt(i);
-//			foreach (var rootGameObject in scene.GetRootGameObjects())
-//			{
-//				RecordGameObject(rootGameObject);
-//			}
-//		}
-	}
-
-
-	public class TrackData
-	{
-		public int GameObjectInstanceID;
-		public List<RecordableInfo> recordables = new List<RecordableInfo>();
-	}
-	
-	public static List<TrackData> GetTrackDatas()
-	{
-		List<TrackData> result = null;
-
-		foreach (var frameRecord in m_frameRecords)
-		{
-			foreach (var recordableInfo in frameRecord.records)
-			{
-				result = new List<TrackData>();
-				var go = EditorUtility.InstanceIDToObject(recordableInfo.instanceID) as GameObject;
-				var instanceID = go.GetInstanceID();
-				if (go != null)
-				{
-					var tdata = result.Find(data => data.GameObjectInstanceID == instanceID); 
-					if ( tdata == null)
-					{
-						tdata = new TrackData() {GameObjectInstanceID = instanceID};
-					}
-					tdata.recordables.Add(recordableInfo);
-					result.Add(tdata);
-				}
-			}
-
-		}
-		if (result != null)
-		{
-			foreach (var trackData in result)
-			{
-				trackData.recordables.Sort((a, b) => a.instanceID.CompareTo(b.instanceID));
-			}
-			result.Sort((data, trackData) => data.GameObjectInstanceID.CompareTo(trackData.GameObjectInstanceID));
-		}		
-		
-		return result;
 	}
 	
 	private static void RecordData(Type t, UnityEngine.Object o)
@@ -211,6 +165,14 @@ public class GameDebuggerDatabase
 					var smr = ((Component) obj).GetComponent<SkinnedMeshRenderer>();
 					if (smr != null)
 						smrs.Add(smr);
+					else
+					{
+//						Debug.LogError("smr is null");
+					}
+				}
+				else
+				{
+					Debug.LogError("Object is null for instanceId:" + recordableInfo.instanceID);
 				}
 			}
 		}

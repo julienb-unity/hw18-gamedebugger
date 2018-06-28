@@ -34,6 +34,7 @@ namespace GameDebugger
                 m_ListView.Refresh();
             };
             scheduler.Refresh += RefreshTracks;
+            GameDebuggerDatabase.GameDebugerDatabaseLoaded += () => { RefreshTracks(true); };
         }
 
         Track CreateTrack(VisualTreeAsset asset)
@@ -53,11 +54,16 @@ namespace GameDebugger
 
         void RefreshTracks()
         {
-            if (EditorApplication.isPaused)
+            RefreshTracks(false);
+        }
+
+        void RefreshTracks(bool forceRefresh)
+        {
+            if (EditorApplication.isPaused && !forceRefresh)
                 return;
 
             var newNumFrames = GameDebuggerDatabase.NumFrameRecords;
-            if (newNumFrames == numFrames)
+            if (newNumFrames == numFrames && !forceRefresh)
                 return;
 
             // Get the new instance ID and the new keys.
@@ -73,6 +79,10 @@ namespace GameDebugger
                         var item = m_TrackItemByInstance[recordInfo.instanceID];
                         if (item != null)
                             item.Refresh(recordInfo, f);
+                        else
+                        {
+                            Debug.LogError("Item is null for some reason");
+                        }
                     }
                 }
             }

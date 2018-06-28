@@ -25,6 +25,11 @@ namespace GameDebugger
         protected virtual string ItemName()
         {
             var o = EditorUtility.InstanceIDToObject(m_InstanceId);
+            if (o == null)
+            {
+                Debug.LogError("Cant find object instance " + m_InstanceId);
+                return "undefined";
+            }
             return o.name;
         }
         
