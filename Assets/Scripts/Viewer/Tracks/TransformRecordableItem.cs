@@ -8,33 +8,26 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class TransformRecordableItem : ITrackItem
+    class TransformRecordableItem : TrackItem
     {
-        int m_InstanceId;
         List<int> m_FrameIds;
 
-        readonly Color m_BackgroundColor = Color.Lerp(Color.black, Color.white, 0.7f);
         readonly Color m_KeyColor = Color.Lerp(Color.black, Color.white, 0.2f);
         readonly Color m_LineColor = Color.Lerp(Color.black, Color.white, 0.5f);
 
-        public TransformRecordableItem(RecordableInfo recordableInfo, int frame)
+        public TransformRecordableItem(RecordableInfo recordableInfo, int frame) : base (recordableInfo.instanceID)
         {
             m_FrameIds = new List<int>(200){frame};
             m_InstanceId = recordableInfo.instanceID;
         }
 
-        public void Draw(Track track, ITimeConverter converter)
+        protected override void DrawItem(Track track, ITimeConverter converter)
         {
-            var o = EditorUtility.InstanceIDToObject(m_InstanceId);
-            if (o == null) return;
-            track.Q<Label>().text = o.name;
-            
-            DrawBackground(track);
             DrawLine(track, converter);
             DrawKeys(converter);
         }
 
-        public void Refresh(RecordableInfo recordableInfo, int frame)
+        public override void Refresh(RecordableInfo recordableInfo, int frame)
         {
             var tr = recordableInfo.recordable as TransformRecordable;
             if (tr != null)
@@ -46,11 +39,14 @@ namespace GameDebugger
             }
         }
 
-        public void OnClick(VisualElement panel, float time)
+        public override void OnClick(VisualElement panel, float time)
         {
-            var frameInfo = GameDebuggerDatabase.FrameRecords.FindLast(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
-            var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
-            DrawRecorderInfo(panel, recorderInfo.recordable);
+            var frameInfo = GameDebuggerDatabase.FrameRecords.LastOrDefault(i => i.time < time && i.records.Find(j => j.instanceID == m_InstanceId) != null);
+            if (frameInfo != null)
+            {
+                var recorderInfo = frameInfo.records.Find(i => i.instanceID == m_InstanceId);
+                DrawRecorderInfo(panel, recorderInfo.recordable);
+            }
         }
 
         static void DrawRecorderInfo(VisualElement panel, Recordable recorder)
@@ -68,15 +64,6 @@ namespace GameDebugger
             stringBuilder.Append("Rotation ").Append(rec.localRotation).AppendLine();
             stringBuilder.Append("Scale ").Append(rec.localScale).AppendLine();
             return stringBuilder.ToString();
-        }
-
-        void DrawBackground(Track track)
-        {
-            var keycontainerRect = track.contentRect;
-            keycontainerRect.x += 145;
-            keycontainerRect.width -= 145;
-            keycontainerRect.height -= 5;
-            EditorGUI.DrawRect(keycontainerRect, m_BackgroundColor);
         }
 
         void DrawKeys(ITimeConverter converter)

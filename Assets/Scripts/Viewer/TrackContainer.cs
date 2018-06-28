@@ -14,7 +14,7 @@ namespace GameDebugger
         VisualElement m_ExtraViwer;
 
         // Keys by Instance ID.
-        Dictionary<int, ITrackItem> m_TrackItemByInstance = new Dictionary<int, ITrackItem>();
+        Dictionary<int, TrackItem> m_TrackItemByInstance = new Dictionary<int, TrackItem>();
         int numFrames;
 
         public TrackContainer(ITimeConverter timeConverter, RefreshScheduler scheduler, VisualElement extraViewer)

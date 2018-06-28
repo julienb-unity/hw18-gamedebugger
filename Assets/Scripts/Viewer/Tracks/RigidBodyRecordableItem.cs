@@ -4,21 +4,18 @@ using System.Linq;
 using Recordables;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
-    class RigidBodyRecordableItem : ITrackItem
+    class RigidBodyRecordableItem : TrackItem
     {
-        int m_InstanceId;
         List<int> m_FrameIds;
         List<float> m_Velocities;
 
-        readonly Color m_BackgroundColor = Color.Lerp(Color.black, Color.white, 0.7f);
         readonly Color m_LowVelocityColor = Color.blue;
         readonly Color m_HighVelocityColor = Color.red;
 
-        public RigidBodyRecordableItem(RecordableInfo recordableInfo, int frame)
+        public RigidBodyRecordableItem(RecordableInfo recordableInfo, int frame) : base(recordableInfo.instanceID)
         {
             m_FrameIds = new List<int>(200) { frame };
             var rr = (RigidBodyRecordable)recordableInfo.recordable;
@@ -26,16 +23,12 @@ namespace GameDebugger
             m_InstanceId = recordableInfo.instanceID;
         }
 
-        public void Draw(Track track, ITimeConverter converter)
+        protected override void DrawItem(Track track, ITimeConverter converter)
         {
-            var o = EditorUtility.InstanceIDToObject(m_InstanceId);
-            track.Q<Label>().text = o.name;
-
-            DrawBackground(track);
             DrawKeys(track, converter);
         }
 
-        public void Refresh(RecordableInfo recordableInfo, int frame)
+        public override void Refresh(RecordableInfo recordableInfo, int frame)
         {
             var rr = recordableInfo.recordable as RigidBodyRecordable;
             if (rr != null)
@@ -50,18 +43,6 @@ namespace GameDebugger
             }
         }
 
-        public void OnClick(VisualElement panel, float time)
-        {}
-
-        void DrawBackground(Track track)
-        {
-            var keycontainerRect = track.contentRect;
-            keycontainerRect.x += 145;
-            keycontainerRect.width -= 145;
-            keycontainerRect.height -= 5;
-            EditorGUI.DrawRect(keycontainerRect, m_BackgroundColor);
-        }
-
         void DrawKeys(Track track, ITimeConverter converter)
         {
             if (m_FrameIds.Count == 0)
@@ -72,7 +53,6 @@ namespace GameDebugger
 
             var height = track.contentRect.height;
 
-            Color color;
             var prevVelocity = m_Velocities[0];
             var prevVelocityHeight = 5.0f + (prevVelocity / maxVelocity) * 25.0f;
             var prevFrameTime = GameDebuggerDatabase.GetRecords(m_FrameIds[0]).time;
