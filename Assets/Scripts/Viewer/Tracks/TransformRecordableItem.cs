@@ -18,7 +18,6 @@ namespace GameDebugger
         public TransformRecordableItem(RecordableInfo recordableInfo, int frame) : base (recordableInfo.instanceID)
         {
             m_FrameIds = new List<int>(200){frame};
-            m_InstanceId = recordableInfo.instanceID;
         }
 
         protected override void DrawItem(Track track, ITimeConverter converter)

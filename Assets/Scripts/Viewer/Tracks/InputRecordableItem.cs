@@ -28,7 +28,6 @@ namespace GameDebugger
         
         public InputRecordableItem(RecordableInfo recordableInfo, int frame) : base(recordableInfo.instanceID)
         {
-            m_InstanceId = recordableInfo.instanceID;
             AddToInputs(GetInputsForFrame(recordableInfo.recordable, frame));
         }
 

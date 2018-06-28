@@ -4,6 +4,7 @@ using System.Linq;
 using Recordables;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 namespace GameDebugger
 {
@@ -20,7 +21,6 @@ namespace GameDebugger
             m_FrameIds = new List<int>(200) { frame };
             var rr = (RigidBodyRecordable)recordableInfo.recordable;
             m_Velocities = new List<float>(200) { rr.speed.magnitude };
-            m_InstanceId = recordableInfo.instanceID;
         }
 
         protected override void DrawItem(Track track, ITimeConverter converter)

@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
+using UnityEngine.Experimental.UIElements.StyleSheets;
 
 namespace GameDebugger
 {
@@ -12,14 +13,23 @@ namespace GameDebugger
 
         public void Draw(Track track, ITimeConverter converter)
         {
+            // Set track icon and name.
+            track.Q<VisualElement>("trackIcon").style.backgroundImage = ItemImage();
             track.Q<Label>().text = ItemName();
+
             DrawBackground(track);
             DrawItem(track, converter);
         }
         
         protected TrackItem(int instanceId)
         {
-            m_InstanceId = instanceId; 
+            m_InstanceId = instanceId;
+        }
+
+        protected virtual Texture2D ItemImage()
+        {
+            var o = EditorUtility.InstanceIDToObject(m_InstanceId);
+            return EditorGUIUtility.ObjectContent(null, o.GetType()).image as Texture2D;
         }
 
         protected virtual string ItemName()
@@ -42,8 +52,8 @@ namespace GameDebugger
         protected virtual void DrawBackground(Track track)
         {
             var keycontainerRect = track.contentRect;
-            keycontainerRect.x += 145;
-            keycontainerRect.width -= 145;
+            keycontainerRect.x += 155;
+            keycontainerRect.width -= 155;
             keycontainerRect.height -= 5;
             EditorGUI.DrawRect(keycontainerRect, m_BackgroundColor);
         }

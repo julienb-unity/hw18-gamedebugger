@@ -37,11 +37,11 @@
 
 #timeArea{
     height: 50;
-    margin-left: 150;
+    margin-left: 160;
 }
 
 #timeAreaGUI{
-    margin-left: -150; /*should match #timeArea position-left*/
+    margin-left: -160; /*should match #timeArea position-left*/
 }
 
 #playhead
@@ -100,14 +100,36 @@
 .trackHeader
 {
     background-color: #8b8b8b;
-    width: 140;
+    width: 150;
     padding-top: 0;
-    margin-top: 0;
     padding-bottom: 0;
+    margin-top: 0;
     margin-bottom: 0;
+    margin-left: 5;
     margin-right: 5;
     text-alignment: middle-center;
     text-color: #ffffff;
+}
+
+.trackIcon
+{
+    background-image: none;
+    position-type: absolute;
+    position-left: 3;
+    position-top: 17;
+    width: 16;
+    height: 16;
+}
+
+.trackName
+{
+    position-type: absolute;
+    position-top: 17;
+    position-left: 20;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 KeyContainer { /* recorded item container */
